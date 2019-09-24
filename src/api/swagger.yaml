@@ -1,0 +1,1351 @@
+openapi: 3.0.0
+info:
+  title: Ravimoshark Contract API
+  description: |
+    This is an API to interact with Ravimoshark contracts database.
+    # Introduction
+    This API allow to create, modify and delete contracts and machines. It also interacts with machines imported from SAGE database.
+    # User Authentication
+    This API does not contain any kind of user validation but It request to have a valid authentication user to interact with it. For more information about user Authentication, please refer to [Ravimoshark User Authentication](https://ravimoshark.com/back/apis/auth/latest).
+  termsOfService: https://ravimoshark.com/terms/
+  contact:
+    url: http://ravimoshark.com/contact
+    email: dev@ravimoshark.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out how to interact with Ravimoshark's APIs.
+  url: https://ravimoshark.com/back/apis/auth/latest
+servers:
+- url: http://localhost:8000/api/v1
+- url: https://ravimoshark.com/back/apis/contract/v1
+tags:
+- name: Contracts
+  description: Operations about contracts.
+- name: Machines
+  description: Operations about machines.
+- name: ImportedMachines
+  description: Operations about imported machines.
+paths:
+  /contracts:
+    get:
+      tags:
+      - Contracts
+      summary: Get all contracts.
+      description: Get all contracts.
+      operationId: getContracts
+      parameters:
+      - name: SkipParam
+        in: query
+        description: number of item to skip
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: max records to return
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: orderBy
+        in: query
+        description: order by property.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: filterBy
+        in: query
+        description: filter data.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: deleted
+        in: query
+        description: Get all, deleted, not deleted data. Default not deleted.
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Deleted'
+      - name: metadata
+        in: query
+        description: If metadata is needed (for pagination controls)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      responses:
+        200:
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        204:
+          description: Response is empty.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        400:
+          description: Some parameters are missing or badly entered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        404:
+          description: Entity not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        405:
+          description: Illegal input for operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+      x-swagger-router-controller: Contracts
+    put:
+      tags:
+      - Contracts
+      summary: Edit one contract.
+      description: Edit one contract.
+      operationId: editContract
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contracts'
+      responses:
+        200:
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contracts'
+        400:
+          description: Some parameters are missing or badly entered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        404:
+          description: Entity not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        405:
+          description: Illegal input for operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+      x-swagger-router-controller: Contracts
+    post:
+      tags:
+      - Contracts
+      summary: Add one contract.
+      description: Add one contract.
+      operationId: addContract
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contracts'
+      responses:
+        200:
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contracts'
+        400:
+          description: Some parameters are missing or badly entered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        404:
+          description: Entity not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        405:
+          description: Illegal input for operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+      x-swagger-router-controller: Contracts
+  /contracts/{refContract}:
+    get:
+      tags:
+      - Contracts
+      summary: Get one contract.
+      description: Get one contract.
+      operationId: getContractById
+      parameters:
+      - name: refContract
+        in: path
+        description: id to delete or search
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: deleted
+        in: query
+        description: Get all, deleted, not deleted data. Default not deleted.
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Deleted'
+      responses:
+        200:
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contracts'
+        400:
+          description: Some parameters are missing or badly entered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        404:
+          description: Entity not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        405:
+          description: Illegal input for operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+      x-swagger-router-controller: Contracts
+    delete:
+      tags:
+      - Contracts
+      summary: Delete one contract.
+      description: Delete one contract.
+      operationId: deleteContract
+      parameters:
+      - name: refContract
+        in: path
+        description: id to delete or search
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                example:
+                  id: 0
+                x-content-type: application/json
+        400:
+          description: Some parameters are missing or badly entered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        404:
+          description: Entity not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        405:
+          description: Illegal input for operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+      x-swagger-router-controller: Contracts
+  /importedMachines:
+    get:
+      tags:
+      - ImportedMachines
+      summary: Get all imported Machines.
+      description: Get all imported Machines.
+      operationId: getImportedMachines
+      parameters:
+      - name: SkipParam
+        in: query
+        description: number of item to skip
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: max records to return
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: orderBy
+        in: query
+        description: order by property.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: filterBy
+        in: query
+        description: filter data.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: deleted
+        in: query
+        description: Get all, deleted, not deleted data. Default not deleted.
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Deleted'
+      - name: metadata
+        in: query
+        description: If metadata is needed (for pagination controls)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      responses:
+        200:
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+        204:
+          description: Response is empty.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        400:
+          description: Some parameters are missing or badly entered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        404:
+          description: Entity not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        405:
+          description: Illegal input for operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+      x-swagger-router-controller: ImportedMachines
+    put:
+      tags:
+      - ImportedMachines
+      summary: Edit one imported Machine.
+      description: Edit one imported Machine.
+      operationId: editImportedMachine
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportedMachines'
+      responses:
+        200:
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportedMachines'
+        400:
+          description: Some parameters are missing or badly entered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        404:
+          description: Entity not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        405:
+          description: Illegal input for operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+      x-swagger-router-controller: ImportedMachines
+    post:
+      tags:
+      - ImportedMachines
+      summary: Add one imported Machine.
+      description: Add one imported Machine.
+      operationId: addImportedMachine
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportedMachines'
+      responses:
+        200:
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportedMachines'
+        400:
+          description: Some parameters are missing or badly entered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        404:
+          description: Entity not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        405:
+          description: Illegal input for operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+      x-swagger-router-controller: ImportedMachines
+  /importedMachines/{id}:
+    get:
+      tags:
+      - ImportedMachines
+      summary: Get one imported Machine.
+      description: Get one imported Machine.
+      operationId: getImportedMachineById
+      parameters:
+      - name: id
+        in: path
+        description: id to delete or search
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: deleted
+        in: query
+        description: Get all, deleted, not deleted data. Default not deleted.
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Deleted'
+      responses:
+        200:
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Machines'
+        400:
+          description: Some parameters are missing or badly entered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        404:
+          description: Entity not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        405:
+          description: Illegal input for operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+      x-swagger-router-controller: ImportedMachines
+    delete:
+      tags:
+      - ImportedMachines
+      summary: Delete one imported Machine.
+      description: Delete one imported Machine.
+      operationId: deleteImportedMachine
+      parameters:
+      - name: id
+        in: path
+        description: id to delete or search
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                example:
+                  id: 0
+                x-content-type: application/json
+        400:
+          description: Some parameters are missing or badly entered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        404:
+          description: Entity not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        405:
+          description: Illegal input for operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+      x-swagger-router-controller: ImportedMachines
+  /machines:
+    get:
+      tags:
+      - Machines
+      summary: Get all machines.
+      description: Get all machines.
+      operationId: getMachines
+      parameters:
+      - name: SkipParam
+        in: query
+        description: number of item to skip
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: max records to return
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: orderBy
+        in: query
+        description: order by property.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: filterBy
+        in: query
+        description: filter data.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: deleted
+        in: query
+        description: Get all, deleted, not deleted data. Default not deleted.
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Deleted'
+      - name: metadata
+        in: query
+        description: If metadata is needed (for pagination controls)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      responses:
+        200:
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+        204:
+          description: Response is empty.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        400:
+          description: Some parameters are missing or badly entered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        404:
+          description: Entity not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        405:
+          description: Illegal input for operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+      x-swagger-router-controller: Machines
+    put:
+      tags:
+      - Machines
+      summary: Edit one machine.
+      description: Edit one machine.
+      operationId: editMachine
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Machines'
+      responses:
+        200:
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Machines'
+        400:
+          description: Some parameters are missing or badly entered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        404:
+          description: Entity not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        405:
+          description: Illegal input for operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+      x-swagger-router-controller: Machines
+    post:
+      tags:
+      - Machines
+      summary: Add one machine.
+      description: Add one machine.
+      operationId: addMachine
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Machines'
+      responses:
+        200:
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Machines'
+        400:
+          description: Some parameters are missing or badly entered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        404:
+          description: Entity not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        405:
+          description: Illegal input for operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+      x-swagger-router-controller: Machines
+  /machines/{id}:
+    get:
+      tags:
+      - Machines
+      summary: Get one Machine.
+      description: Get one machine.
+      operationId: getMachineById
+      parameters:
+      - name: id
+        in: path
+        description: id to delete or search
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: deleted
+        in: query
+        description: Get all, deleted, not deleted data. Default not deleted.
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Deleted'
+      responses:
+        200:
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Machines'
+        400:
+          description: Some parameters are missing or badly entered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        404:
+          description: Entity not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        405:
+          description: Illegal input for operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+      x-swagger-router-controller: Machines
+    delete:
+      tags:
+      - Machines
+      summary: Delete one machine.
+      description: Delete one machine.
+      operationId: deleteMachine
+      parameters:
+      - name: id
+        in: path
+        description: id to delete or search
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                example:
+                  id: 0
+                x-content-type: application/json
+        400:
+          description: Some parameters are missing or badly entered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        404:
+          description: Entity not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+        405:
+          description: Illegal input for operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomError'
+      x-swagger-router-controller: Machines
+components:
+  schemas:
+    Contracts:
+      type: object
+      properties:
+        refContract:
+          type: integer
+          format: int32
+        machines:
+          type: array
+          items:
+            $ref: '#/components/schemas/Machines'
+        client:
+          type: string
+        identification:
+          type: string
+        dateDebut:
+          type: string
+          format: date
+        dateFin:
+          type: string
+          format: date
+        reconduction:
+          type: string
+        loyer:
+          type: number
+          format: float
+        miniconso:
+          type: number
+          format: float
+        reviewed:
+          type: boolean
+        valid:
+          type: boolean
+      description: Client's contract.
+      example:
+        valid: true
+        refContract: 2
+        identification: identification
+        dateDebut: 2000-01-23
+        loyer: 9.301444
+        miniconso: 3.6160767
+        client: client
+        reviewed: true
+        machines:
+        - refContract: refContract
+          piece: piece
+          id: 7
+          numSerie: numSerie
+        - refContract: refContract
+          piece: piece
+          id: 7
+          numSerie: numSerie
+        dateFin: 2000-01-23
+        reconduction: reconduction
+    CustomError:
+      required:
+      - message
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          type: string
+    Deleted:
+      type: string
+      enum:
+      - ACTIVE
+      - DELETED
+      - ALL
+      default: ACTIVE
+    Email:
+      type: string
+      description: User email address
+      format: test
+      example: john.smith@example.com
+    ImportedMachines:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        identification:
+          type: string
+        MachineId:
+          type: integer
+          format: int32
+        reviewed:
+          type: boolean
+        refContract:
+          type: string
+      description: Machine imported from SAGE.
+      example:
+        MachineId: 6
+        refContract: refContract
+        identification: identification
+        reviewed: true
+        id: 0
+    Machines:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        piece:
+          type: string
+        numSerie:
+          type: string
+        refContract:
+          type: string
+      description: Client's machines associated with a contract.
+      example:
+        refContract: refContract
+        piece: piece
+        id: 7
+        numSerie: numSerie
+    Metadata:
+      type: object
+      properties:
+        first:
+          type: integer
+          format: int64
+        prev:
+          type: integer
+          format: int64
+        self:
+          type: integer
+          format: int64
+        next:
+          type: integer
+          format: int64
+        last:
+          type: integer
+          format: int64
+      example:
+        next: 5
+        last: 5
+        prev: 6
+        self: 1
+        first: 0
+    User:
+      type: object
+      properties:
+        username:
+          minLength: 4
+          type: string
+          description: User supplied username
+          example: John78
+        firstName:
+          minLength: 1
+          type: string
+          description: User first name
+          example: John
+        lastName:
+          minLength: 1
+          type: string
+          description: User last name
+          example: Smith
+        email:
+          $ref: '#/components/schemas/Email'
+    inline_response_200:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contracts'
+      example:
+        metadata:
+          next: 5
+          last: 5
+          prev: 6
+          self: 1
+          first: 0
+        items:
+        - valid: true
+          refContract: 2
+          identification: identification
+          dateDebut: 2000-01-23
+          loyer: 9.301444
+          miniconso: 3.6160767
+          client: client
+          reviewed: true
+          machines:
+          - refContract: refContract
+            piece: piece
+            id: 7
+            numSerie: numSerie
+          - refContract: refContract
+            piece: piece
+            id: 7
+            numSerie: numSerie
+          dateFin: 2000-01-23
+          reconduction: reconduction
+        - valid: true
+          refContract: 2
+          identification: identification
+          dateDebut: 2000-01-23
+          loyer: 9.301444
+          miniconso: 3.6160767
+          client: client
+          reviewed: true
+          machines:
+          - refContract: refContract
+            piece: piece
+            id: 7
+            numSerie: numSerie
+          - refContract: refContract
+            piece: piece
+            id: 7
+            numSerie: numSerie
+          dateFin: 2000-01-23
+          reconduction: reconduction
+    inline_response_200_1:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImportedMachines'
+      example:
+        metadata:
+          next: 5
+          last: 5
+          prev: 6
+          self: 1
+          first: 0
+        items:
+        - MachineId: 6
+          refContract: refContract
+          identification: identification
+          reviewed: true
+          id: 0
+        - MachineId: 6
+          refContract: refContract
+          identification: identification
+          reviewed: true
+          id: 0
+    inline_response_200_2:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Machines'
+      example:
+        metadata:
+          next: 5
+          last: 5
+          prev: 6
+          self: 1
+          first: 0
+        items:
+        - refContract: refContract
+          piece: piece
+          id: 7
+          numSerie: numSerie
+        - refContract: refContract
+          piece: piece
+          id: 7
+          numSerie: numSerie
+  responses:
+    204:
+      description: Response is empty.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CustomError'
+    400:
+      description: Some parameters are missing or badly entered.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CustomError'
+    401:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: string
+            x-content-type: application/json
+    404:
+      description: Entity not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CustomError'
+    405:
+      description: Illegal input for operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CustomError'
+  parameters:
+    Deleted:
+      name: deleted
+      in: query
+      description: Get all, deleted, not deleted data. Default not deleted.
+      required: false
+      style: form
+      explode: true
+      schema:
+        $ref: '#/components/schemas/Deleted'
+    Filter:
+      name: filterBy
+      in: query
+      description: filter data.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+    Id:
+      name: id
+      in: path
+      description: id to delete or search
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+    IdUser:
+      name: idUser
+      in: query
+      description: id of user to get information only from it
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+        format: int64
+    Limit:
+      name: limit
+      in: query
+      description: max records to return
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: integer
+        format: int32
+    Metadata:
+      name: metadata
+      in: query
+      description: If metadata is needed (for pagination controls)
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: boolean
+    OrderBy:
+      name: orderBy
+      in: query
+      description: order by property.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+    RefContract:
+      name: refContract
+      in: path
+      description: id to delete or search
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+    Skip:
+      name: SkipParam
+      in: query
+      description: number of item to skip
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: integer
+        format: int32
+  headers:
+    Limit:
+      description: The number of allowed requests in the current period
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+    Remaining:
+      description: The number of remaining requests in the current period
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+    Reset:
+      description: The number of seconds left in the current period
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
+    basic_auth:
+      type: http
+      scheme: basic
+    main_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: http://example.com/api/oauth/dialog
+          scopes:
+            read:users: read users info
+            write:users: modify or remove users

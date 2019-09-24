@@ -1,0 +1,20 @@
+{
+  "name": "ravimoshark-contract-api",
+  "version": "1.0.0",
+  "description": "This is an API to interact with Ravimoshark contracts database. # Introduction This API allow to create, modify and delete contracts and machines. It also interacts with machines imported from SAGE database. # User Authentication This API does not contain any kind of user validation but It request to have a valid authentication user to interact with it. For more information about user Authentication, please refer to [Ravimoshark User Authentication](https://ravimoshark.com/back/apis/auth/latest). ",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm install",
+    "start": "node src/index.js"
+  },
+  "keywords": [
+    "swagger"
+  ],
+  "license": "Unlicense",
+  "private": true,
+  "dependencies": {
+    "connect": "^3.2.0",
+    "js-yaml": "^3.3.0",
+    "oas3-tools": "^1.0.1"
+  }
+}

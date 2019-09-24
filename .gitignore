@@ -1,1 +1,8 @@
-binaries
+/node_modules/
+.env
+/keys/
+app_tokens.json
+/data/
+/assets/
+/binaries/
+/build/
