@@ -27,7 +27,7 @@ if ! type "curl" &> /dev/null; then
   exit 1
 fi
 
-API_SPEC="src/api/openapi.json"
+API_SPEC="https://ravimosharksas.gitlab.io/apis/contract/documentation/openapi.json"
 VERSION="1.0.0"
 function usage(){
     echo "1 - "
