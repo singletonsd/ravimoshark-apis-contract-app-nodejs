@@ -95,7 +95,7 @@ export class Contracts {
     })
     public deleted?: boolean;
 
-    @OneToMany(() => ImportedMachines, (importedMachines: ImportedMachines) => importedMachines.refContract)
+    @OneToMany(() => ImportedMachines, (importedMachines: ImportedMachines) => importedMachines.contract)
     public importedMachines?: Array<ImportedMachines>;
 
     @OneToMany(() => Location, (location: Location) => location.refContract, { })

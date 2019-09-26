@@ -21,10 +21,10 @@ export class Machine {
 
     @ManyToOne(() => Pieces, (pieces: Pieces) => pieces.machines, { nullable: false })
     @JoinColumn({ name: "RefArticle" })
-    public refArticle?: Promise<Pieces | null>;
+    public piece?: Promise<Pieces | null>;
 
-    @RelationId((machine: Machine) => machine.refArticle)
-    public refArticleId?: Promise<Array<string>>;
+    @RelationId((machine: Machine) => machine.piece)
+    public refArticle?: Promise<Array<string>>;
 
     @Column("datetimeoffset", {
         default: () => "sysdatetimeoffset()",

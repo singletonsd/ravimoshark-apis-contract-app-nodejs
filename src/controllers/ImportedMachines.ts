@@ -45,12 +45,11 @@ module.exports.editImportedMachine = (req: CustomRequest, res: CustomResponse, n
 };
 
 module.exports.getImportedMachineById = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const id = Utilities.checkVariableNotNull("id", req.swagger.params, res);
   const params: ParametersIdDeleted = Utilities.checkIdAndDelete(req.swagger.params, res);
   if (!params) {
     return;
   }
-  ImportedMachinesService.getImportedMachineById(id, params)
+  ImportedMachinesService.getImportedMachineById(params)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
@@ -63,8 +62,7 @@ module.exports.getImportedMachines = (req: CustomRequest, res: CustomResponse, n
   if (!params) {
     return;
   }
-  ImportedMachinesService.getImportedMachines(params.skip, params.limit, params.orderBy, params.filter
-    , params.deleted, params.metadata)
+  ImportedMachinesService.getImportedMachines(params)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {

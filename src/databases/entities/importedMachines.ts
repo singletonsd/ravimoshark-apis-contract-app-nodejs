@@ -20,7 +20,7 @@ export class ImportedMachines {
 
     @ManyToOne(() => Machine, (machine: Machine) => machine.importedMachines, {})
     @JoinColumn({ name: "MachineId" })
-    public machine?: Promise<Machine | null>;
+    public machine?: Machine | null;
 
     @RelationId((importedMachines: ImportedMachines) => importedMachines.machine)
     public machineId?: Promise<Array<number>>;
@@ -34,10 +34,10 @@ export class ImportedMachines {
 
     @ManyToOne(() => Contracts, (contracts: Contracts) => contracts.importedMachines, { nullable: false })
     @JoinColumn({ name: "RefContract" })
-    public refContract?: Promise<Contracts | null>;
+    public contract?: Contracts | null;
 
-    @RelationId((importedMachines: ImportedMachines) => importedMachines.refContract)
-    public refContractId?: Promise<Array<number>>;
+    @RelationId((importedMachines: ImportedMachines) => importedMachines.contract)
+    public refContract?: Promise<Array<number>>;
 
     @Column("datetimeoffset", {
         default: () => "sysdatetimeoffset()",

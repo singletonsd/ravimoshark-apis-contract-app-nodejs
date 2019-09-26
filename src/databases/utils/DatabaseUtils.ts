@@ -109,7 +109,7 @@ export class DatabaseUtilities {
         "importedMachines.machine"
       ];
     } else if (entity === ImportedMachines) {
-      finalRelations = ["refContract", "machine", "machine.refArticle"];
+      finalRelations = ["contract", "machine", "machine.piece"];
     } else if (entity === Location) {
       finalRelations = [
         "MachineId",

@@ -5,7 +5,7 @@ import { Contracts as ContractsDB } from "../databases/entities";
 import { DatabaseUtilities } from "../databases/utils/DatabaseUtils";
 import { Contracts, Deleted, RefContract } from "../models";
 import { LoggerUtility } from "../utils/LoggerUtility";
-import { ParametersComplete, Utilities } from "../utils/utilities";
+import { ParametersComplete, Utilities, ParametersIdDeleted } from "../utils/utilities";
 import { VALID_RESPONSES } from "../utils/ValidResponses";
 
 const SERVICE_NAME = "ContractsService";
@@ -120,15 +120,15 @@ export class ContractsService {
    * deleted Deleted Get all, deleted, not deleted data. Default not deleted. (optional)
    * returns Contracts
    */
-  public static getContractById(refContract: number, deleted: Deleted) {
+  public static getContractById(params: ParametersIdDeleted ) {
     const FUNCTION_NAME = "getById";
     return new Promise(async (resolve, reject) => {
         LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
         const prevAccount: ContractsDB = await getConnection().manager
-            .findOne(ContractsDB, DatabaseUtilities.getFindOneObject(refContract, deleted, ContractsDB));
+            .findOne(ContractsDB, DatabaseUtilities.getFindOneObject(params.id, params.deleted, ContractsDB));
         if (!prevAccount) {
             LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME
-                , "not exists with id", refContract.refContract, "and deleted", deleted.toString());
+                , "not exists with id", params.id, "and deleted", params.deleted.toString());
             reject(VALID_RESPONSES.ERROR.NOT_EXIST.ACCOUNT);
             return;
         }

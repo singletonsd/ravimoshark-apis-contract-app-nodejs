@@ -1,13 +1,16 @@
 "use strict";
 
 import { Deleted, ImportedMachines, RefContract } from "src/models";
+import { ImportedMachines as ImportedMachinesDB } from "../databases/entities";
+import { DatabaseUtilities } from "../databases/utils/DatabaseUtils";
 import { LoggerUtility } from "../utils/LoggerUtility";
-import { Utilities } from "../utils/utilities";
+import { Utilities, ParametersComplete, ParametersIdDeleted } from "../utils/utilities";
 import { VALID_RESPONSES } from "../utils/ValidResponses";
+import { getConnection } from "typeorm";
 
 const SERVICE_NAME = "ImportedMachinesService";
 
-export class ImportedMachinesService {
+export class ImportedMachinesService<T> {
   // tslint:disable:object-literal-sort-keys
   /**
    * Add one imported Machine.
@@ -80,20 +83,22 @@ export class ImportedMachinesService {
    * deleted Deleted Get all, deleted, not deleted data. Default not deleted. (optional)
    * returns Machines
    */
-  public static getImportedMachineById(id, deleted) {
-    return new Promise((resolve, reject) => {
-      const examples = {};
-      examples["application/json"] = {
-        refContract: "refContract",
-        piece: "piece",
-        id: 7,
-        numSerie: "numSerie"
-      };
-      if (Object.keys(examples).length > 0) {
-        resolve(examples[Object.keys(examples)[0]]);
-      } else {
-        resolve();
-      }
+  public static getImportedMachineById(params: ParametersIdDeleted) {
+    const FUNCTION_NAME = "getById";
+    return new Promise(async (resolve, reject) => {
+        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
+        const prevAccount: ImportedMachinesDB = await getConnection().manager
+          .findOne(ImportedMachinesDB
+            , DatabaseUtilities.getFindOneObject(params.id, params.deleted, ImportedMachinesDB));
+        if (!prevAccount) {
+            LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME
+                , "not exists with id", params.id, "and deleted", params.deleted.toString());
+            reject(VALID_RESPONSES.ERROR.NOT_EXIST.ACCOUNT);
+            return;
+        }
+        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "got", prevAccount.refContract);
+        resolve(prevAccount);
+        return;
     });
   }
 
@@ -110,42 +115,26 @@ export class ImportedMachinesService {
    * returns inline_response_200_1
    */
   public static getImportedMachines(
-    skip: number, limit: number,
-    orderBy: string, filter: string,
-    deleted: Deleted, metadata: boolean
-  ) {
-    return new Promise((resolve, reject) => {
-      const examples = {};
-      examples["application/json"] = {
-        metadata: {
-          next: 5,
-          last: 5,
-          prev: 6,
-          self: 1,
-          first: 0
-        },
-        items: [
-          {
-            MachineId: 6,
-            refContract: "rexport class ContractsService {efContract",
-            identification: "identification",
-            reviewed: true,
-            id: 0
-          },
-          {
-            MachineId: 6,
-            refContract: "refContract",
-            identification: "identification",
-            reviewed: true,
-            id: 0
-          }
-        ]
-      };
-      if (Object.keys(examples).length > 0) {
-        resolve(examples[Object.keys(examples)[0]]);
-      } else {
-        resolve();
+    params: ParametersComplete) {
+    const FUNCTION_NAME = "get";
+    return new Promise(async (resolve, reject) => {
+      LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
+      const object = DatabaseUtilities.getFindObject(params, ImportedMachinesDB);
+      if (!object) {
+          LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME, "order param malformed", params.orderBy);
+          reject(VALID_RESPONSES.ERROR.PARAMS.MALFORMED.ORDERBY);
+          return;
       }
-    });
+      LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "with", object);
+      const [accounts, total] = await getConnection().manager.findAndCount(ImportedMachinesDB, object);
+      if (!accounts || !accounts.length) {
+          LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME, "empty result");
+          resolve();
+          return;
+      }
+      LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "got ", accounts.length);
+      resolve(Utilities.getMetadataFormat(accounts, total, params));
+      return;
+  });
   }
 }

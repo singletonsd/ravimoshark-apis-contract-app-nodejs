@@ -49,7 +49,7 @@ module.exports.getContractById = (req: CustomRequest, res: CustomResponse, next:
   if (!params) {
       return;
   }
-  ContractsService.getContractById(params.id, params.deleted)
+  ContractsService.getContractById(params)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
