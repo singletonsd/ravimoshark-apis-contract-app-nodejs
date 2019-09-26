@@ -13,17 +13,17 @@ export class Location {
 
     @ManyToOne(() => Machine, (machine: Machine) => machine.locations, { nullable: false })
     @JoinColumn({ name: "MachineId" })
-    public machine?: Promise<Machine | null>;
+    public machine?: Machine | null;
 
     @RelationId((location: Location) => location.machine)
-    public machineId?: Promise<Array<number>>;
+    public machineId?: Array<number>;
 
     @ManyToOne(() => Contracts, (contracts: Contracts) => contracts.locations, { nullable: false })
     @JoinColumn({ name: "RefContract" })
-    public refContract?: Promise<Contracts | null>;
+    public refContract?: Contracts | null;
 
     @RelationId((location: Location) => location.refContract)
-    public refContractId?: Promise<Array<number>>;
+    public refContractId?: Array<number>;
 
     @Column("datetimeoffset", {
         default: () => "sysdatetimeoffset()",

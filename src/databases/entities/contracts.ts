@@ -15,10 +15,10 @@ export class Contracts {
 
     @ManyToOne(() => Clients, (clients: Clients) => clients.contracts, { nullable: false })
     @JoinColumn({ name: "RefClient" })
-    public client?: Promise<Clients | null>;
+    public client?: Clients | null;
 
     @RelationId((contracts: Contracts) => contracts.client)
-    public refClient?: Promise<Array<string>>;
+    public refClient?: Promise<string>;
 
     @Column("varchar", {
         length: 100,
@@ -96,10 +96,10 @@ export class Contracts {
     public deleted?: boolean;
 
     @OneToMany(() => ImportedMachines, (importedMachines: ImportedMachines) => importedMachines.refContract)
-    public importedMachines?: Promise<Array<ImportedMachines>>;
+    public importedMachines?: Array<ImportedMachines>;
 
     @OneToMany(() => Location, (location: Location) => location.refContract, { })
-    public locations?: Promise<Array<Location>>;
+    public locations?: Array<Location>;
 
     public constructor(init?: Partial<Contracts>) {
         Object.assign(this, init);

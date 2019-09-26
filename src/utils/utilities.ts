@@ -45,17 +45,22 @@ export class Utilities {
         return this.checkVariableNotNull("filter", parameters, res);
     }
 
-    public static checkIdAndDelete(
-            parameters: SwaggerRequestParameters, res?: CustomResponse): ParametersIdDeleted | null {
+    public static checkAndDelete(
+            parameters: SwaggerRequestParameters, idName?: string, res?: CustomResponse): ParametersIdDeleted | null {
         const response: ParametersIdDeleted = {
             deleted: this.checkDeleted(parameters),
-            id: this.checkId(parameters),
+            id: this.checkVariableNotNull(idName, parameters),
             idUser: this.checkVariableNotNull("idUser", parameters)
         };
         if (!response.deleted || (response.id !== 0 && !response.id)) {
             return null;
         }
         return response;
+    }
+
+    public static checkIdAndDelete(
+            parameters: SwaggerRequestParameters, res?: CustomResponse): ParametersIdDeleted | null {
+        return this.checkAndDelete(parameters, "id", res);
     }
 
     public static checkAllParametersGet(
@@ -65,8 +70,6 @@ export class Utilities {
             deleted: this.checkDeleted(parameters),
             filter: this.checkVariableNotNull("filter", parameters),
             id: this.checkId(parameters),
-            idAccount: this.checkVariableNotNull("idAccount", parameters),
-            idUser: this.checkVariableNotNull("idUser", parameters),
             limit: this.checkVariableNotNull("limit", parameters),
             metadata: this.checkVariableNotNull("metadata", parameters),
             orderBy: this.checkVariableNotNull("orderBy", parameters),
@@ -102,17 +105,15 @@ export class Utilities {
         return params;
     }
     public static getMetadataFormat(
-        items: Array<any>, skip: number,
-        limit: number, total: number,
-        containsMetadata: boolean) {
+        items: Array<any>, total: number, params: ParametersComplete) {
         let metadata: Metadata = null;
-        if (containsMetadata) {
+        if (params.metadata === true) {
             metadata = {
                 first: 0
                 , last: total
-                , next: skip + limit
-                , prev: skip - limit
-                , self: skip
+                , next: params.skip + params.limit
+                , prev: params.skip - params.limit
+                , self: params.skip
             };
             if (metadata.prev < 0) {
                 metadata.prev = 0;

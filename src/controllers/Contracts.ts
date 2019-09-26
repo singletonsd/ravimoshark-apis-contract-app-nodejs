@@ -45,12 +45,11 @@ module.exports.editContract = (req: CustomRequest, res: CustomResponse, next: Cu
 };
 
 module.exports.getContractById = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const refContract = Utilities.checkVariableNotNull("refContract", req.swagger.params, res);
-  const params: ParametersIdDeleted = Utilities.checkIdAndDelete(req.swagger.params, res);
+  const params: ParametersIdDeleted = Utilities.checkAndDelete(req.swagger.params, "refContract", res);
   if (!params) {
       return;
   }
-  ContractsService.getContractById(refContract, params)
+  ContractsService.getContractById(params.id, params.deleted)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
@@ -63,8 +62,7 @@ module.exports.getContracts = (req: CustomRequest, res: CustomResponse, next: Cu
   if (!params) {
     return;
   }
-  ContractsService.getContracts(params.skip, params.limit, params.orderBy, params.filter
-    , params.deleted, params.metadata)
+  ContractsService.getContracts(params)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {

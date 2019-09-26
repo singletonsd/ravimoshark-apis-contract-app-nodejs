@@ -1,8 +1,11 @@
 "use strict";
 
+import { getConnection } from "typeorm";
+import { Contracts as ContractsDB } from "../databases/entities";
+import { DatabaseUtilities } from "../databases/utils/DatabaseUtils";
 import { Contracts, Deleted, RefContract } from "../models";
 import { LoggerUtility } from "../utils/LoggerUtility";
-import { Utilities } from "../utils/utilities";
+import { ParametersComplete, Utilities } from "../utils/utilities";
 import { VALID_RESPONSES } from "../utils/ValidResponses";
 
 const SERVICE_NAME = "ContractsService";
@@ -117,40 +120,21 @@ export class ContractsService {
    * deleted Deleted Get all, deleted, not deleted data. Default not deleted. (optional)
    * returns Contracts
    */
-  public static getContractById(refContract: RefContract, deleted) {
-    return new Promise((resolve, reject) => {
-      const examples = {};
-      examples["application/json"] = {
-        valid: true,
-        refContract: 2,
-        identification: "identification",
-        dateDebut: "2000-01-23",
-        loyer: 9.301444,
-        miniconso: 3.6160767,
-        client: "client",
-        reviewed: true,
-        machines: [
-          {
-            refContract: "refContract",
-            piece: "piece",
-            id: 7,
-            numSerie: "numSerie"
-          },
-          {
-            refContract: "refContract",
-            piece: "piece",
-            id: 7,
-            numSerie: "numSerie"
-          }
-        ],
-        dateFin: "2000-01-23",
-        reconduction: "reconduction"
-      };
-      if (Object.keys(examples).length > 0) {
-        resolve(examples[Object.keys(examples)[0]]);
-      } else {
-        resolve();
-      }
+  public static getContractById(refContract: number, deleted: Deleted) {
+    const FUNCTION_NAME = "getById";
+    return new Promise(async (resolve, reject) => {
+        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
+        const prevAccount: ContractsDB = await getConnection().manager
+            .findOne(ContractsDB, DatabaseUtilities.getFindOneObject(refContract, deleted, ContractsDB));
+        if (!prevAccount) {
+            LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME
+                , "not exists with id", refContract.refContract, "and deleted", deleted.toString());
+            reject(VALID_RESPONSES.ERROR.NOT_EXIST.ACCOUNT);
+            return;
+        }
+        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "got", prevAccount.refContract);
+        resolve(prevAccount);
+        return;
     });
   }
 
@@ -167,80 +151,31 @@ export class ContractsService {
    * returns inline_response_200
    */
   public static getContracts(
-    skip: number, limit: number,
-    orderBy: string, filter: string,
-    deleted: Deleted, metadata: boolean
+    params: ParametersComplete
   ) {
-    return new Promise((resolve, reject) => {
-      const examples = {};
-      examples["application/json"] = {
-        metadata: {
-          next: 5,
-          last: 5,
-          prev: 6,
-          self: 1,
-          first: 0
-        },
-        items: [
-          {
-            valid: true,
-            refContract: 2,
-            identification: "identification",
-            dateDebut: "2000-01-23",
-            loyer: 9.301444,
-            miniconso: 3.6160767,
-            client: "client",
-            reviewed: true,
-            machines: [
-              {
-                refContract: "refContract",
-                piece: "piece",
-                id: 7,
-                numSerie: "numSerie"
-              },
-              {
-                refContract: "refContract",
-                piece: "piece",
-                id: 7,
-                numSerie: "numSerie"
-              }
-            ],
-            dateFin: "2000-01-23",
-            reconduction: "reconduction"
-          },
-          {
-            valid: true,
-            refContract: 2,
-            identification: "identification",
-            dateDebut: "2000-01-23",
-            loyer: 9.301444,
-            miniconso: 3.6160767,
-            client: "client",
-            reviewed: true,
-            machines: [
-              {
-                refContract: "refContract",
-                piece: "piece",
-                id: 7,
-                numSerie: "numSerie"
-              },
-              {
-                refContract: "refContract",
-                piece: "piece",
-                id: 7,
-                numSerie: "numSerie"
-              }
-            ],
-            dateFin: "2000-01-23",
-            reconduction: "reconduction"
-          }
-        ]
-      };
-      if (Object.keys(examples).length > 0) {
-        resolve(examples[Object.keys(examples)[0]]);
-      } else {
-        resolve();
+    const FUNCTION_NAME = "get";
+    return new Promise(async (resolve, reject) => {
+      LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
+      const object = DatabaseUtilities.getFindObject(params, ContractsDB);
+      if (!object) {
+          LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME, "order param malformed", orderBy);
+          reject(VALID_RESPONSES.ERROR.PARAMS.MALFORMED.ORDERBY);
+          return;
       }
-    });
+      LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "with", object);
+      const [accounts, total] = await getConnection().manager.findAndCount(ContractsDB, object);
+      if (!accounts || !accounts.length) {
+          LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME, "empty result");
+          resolve();
+          return;
+      }
+      const apiAccounts = [];
+      for (const us of accounts) {
+          apiAccounts.push(new Contracts({ model: us}));
+      }
+      LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "got ", accounts.length);
+      resolve(Utilities.getMetadataFormat(accounts, total, params));
+      return;
+  });
   }
 }

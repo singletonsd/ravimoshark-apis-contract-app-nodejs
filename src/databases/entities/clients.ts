@@ -23,7 +23,8 @@ export class Clients {
     @Column("nvarchar", {
         length: 100,
         name: "Prenom",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public prenom?: string | null;
 
@@ -37,171 +38,196 @@ export class Clients {
     @Column("nvarchar", {
         length: 100,
         name: "Etat",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public etat?: string | null;
 
     @Column("nvarchar", {
         length: 100,
         name: "Groupe",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public groupe?: string | null;
 
     @Column("nvarchar", {
         length: 100,
         name: "StatutGroupe",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public statutGroupe?: string | null;
 
     @Column("nvarchar", {
         length: 100,
         name: "Statut",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public statut?: string | null;
 
     @Column("nvarchar", {
         length: 100,
         name: "RaisonSociale",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public raisonSociale?: string | null;
 
     @Column("nvarchar", {
         length: 100,
         name: "TypeClient",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public typeClient?: string | null;
 
     @Column("int", {
         name: "Score",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public score?: number | null;
 
     @Column("int", {
         name: "Secteur",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public secteur?: number | null;
 
     @Column("int", {
         name: "Frequence",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public frequence?: number | null;
 
     @Column("binary", {
         length: 64,
         name: "PasswordHash",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public passwordHash?: Buffer | null;
 
     @Column("nvarchar", {
         length: 36,
         name: "Salt",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public salt?: string | null;
 
     @Column("nvarchar", {
         length: 100,
         name: "Email",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public email?: string | null;
 
     @Column("bit", {
         default: () => "(0)",
         name: "CheckEmail",
-        nullable: false
+        nullable: false,
+        select: false
     })
     public checkEmail?: boolean;
 
     @Column("bit", {
         default: () => "(0)",
         name: "ForgotPadawan",
-        nullable: false
+        nullable: false,
+        select: false
     })
     public forgotPadawan?: boolean;
 
     @Column("bit", {
         default: () => "(0)",
         name: "Interdit",
-        nullable: false
+        nullable: false,
+        select: false
     })
     public interdit?: boolean;
 
     @Column("datetimeoffset", {
         name: "LastSuccessfulAttempt",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public lastSuccessfulAttempt?: Date | null;
 
     @Column("nvarchar", {
         length: 100,
         name: "IdFacebook",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public idFacebook?: string | null;
 
     @Column("nvarchar", {
         length: 100,
         name: "IdGoogle",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public idGoogle?: string | null;
 
     @Column("nvarchar", {
         length: 100,
         name: "Siret",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public siret?: string | null;
 
     @Column("nvarchar", {
         length: 100,
         name: "TvaIntraco",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public tvaIntraco?: string | null;
 
     @Column("nvarchar", {
         length: 100,
         name: "Civilite",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public civilite?: string | null;
 
     @Column("int", {
         default: () => "(0)",
         name: "NbConnectionAttempt",
-        nullable: false
+        nullable: false,
+        select: false
     })
     public nbConnectionAttempt?: number;
 
     @Column("nvarchar", {
         length: 100,
         name: "ValidationKey",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public validationKey?: string | null;
 
     @Column("datetimeoffset", {
         default: () => "sysdatetimeoffset()",
         name: "__createdAt",
-        nullable: false
+        nullable: false,
+        select: false
     })
     public createdAt?: Date;
 
     @Column("datetimeoffset", {
         default: () => "sysdatetimeoffset()",
         name: "__updatedAt",
-        nullable: false
+        nullable: false,
+        select: false
     })
     public updatedAt?: Date;
 
@@ -215,7 +241,8 @@ export class Clients {
     @Column("nvarchar", {
         length: 100,
         name: "TempEmail",
-        nullable: true
+        nullable: true,
+        select: false
     })
     public tempEmail?: string | null;
 
