@@ -4,6 +4,7 @@ import jsyaml from "js-yaml";
 import * as path from "path";
 // From TypeORM
 import "reflect-metadata";
+import { Connection, createConnection } from "typeorm";
 // import { DatabaseInit } from "./databases/DatabaseInit";
 
 import * as dotenv from "dotenv";
@@ -19,20 +20,23 @@ const swaggerTools = require("oas-tools");
 
 // swaggerRouter configuration
 const options = {
-    controllers: path.join(__dirname, "./controllers")
-    , docs: {
+    controllers: path.join(__dirname, "./controllers"),
+    docs: {
         apiDocs: "/api-docs",
         apiDocsPrefix: "",
         swaggerUi: "/docs",
         swaggerUiPrefix: ""
-    }
-    , loglevel: "debug"
-    , strict: true
-    , validator: true
+    },
+    loglevel: "info",
+    strict: true,
+    validator: true
 };
 
 // TODO: change the path of the documentation to URL of gitlab.
-const spec = fs.readFileSync(path.join(__dirname, "./api/swagger.yaml"), "utf8");
+const spec = fs.readFileSync(
+  path.join(__dirname, "./api/swagger.yaml"),
+  "utf8"
+);
 const swaggerDoc = jsyaml.safeLoad(spec);
 
 if (process.env.SWAGGER_HOST) {
@@ -52,17 +56,16 @@ if (process.env.SWAGGER_BASE_PATH) {
 // Enable JWT tokens
 // require("./utils/jwt-util").addJWT(app, SWAGGER_BASE_PATH);
 
-// if(process.env.DATABASE_LOCAL && process.env.DATABASE_LOCAL === "1"){
-//   console.log("Running with local database.");
-//   var shell = require('shelljs');
-//   shell.exec('./scripts/run_mysql_local.sh');
-// }
-// TODO: wait until connection to database is on to initiate swagger.
-// DatabaseInit.getInstance();
-
-swaggerTools.configure(options);
-swaggerTools.initialize(swaggerDoc, app, () => {
-    LoggerUtility.debug("Swagger OAS middleware initialized.");
-});
+createConnection()
+    .then(async (connection: Connection) => {
+        swaggerTools.configure(options);
+        swaggerTools.initialize(swaggerDoc, app, () => {
+            LoggerUtility.debug("Swagger OAS middleware initialized.");
+        });
+    })
+    .catch((error) => {
+        LoggerUtility.error("TYPEORM: Error conneting with DB.");
+        LoggerUtility.error(error);
+    });
 
 export default app;
