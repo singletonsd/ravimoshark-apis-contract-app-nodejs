@@ -1,18 +1,19 @@
 "use strict";
+import * as dotenv from "dotenv";
+import express from "express";
 import * as fs from "fs";
 import jsyaml from "js-yaml";
 import * as path from "path";
+import { LoggerUtility } from "./utils/LoggerUtility";
+
 // From TypeORM
 import "reflect-metadata";
 import { createConnection, createConnections } from "typeorm";
-// import { DatabaseInit } from "./databases/DatabaseInit";
 
-import * as dotenv from "dotenv";
-import { LoggerUtility } from "./utils/LoggerUtility";
+import cors from "cors";
+import * as helmet from "helmet";
+
 dotenv.config();
-
-// tslint:disable-next-line: no-var-requires
-const express = require("express");
 const app = express();
 
 // tslint:disable-next-line: no-var-requires
@@ -81,6 +82,9 @@ if (fs.existsSync("./ormconfig.json")) {
     connectionFunction = createConnections(dbConf);
 }
 
+app.use(cors());
+app.use(helmet.xssFilter());
+app.use(helmet.frameguard());
 connectionFunction
     .then(async (connection) => {
         swaggerTools.configure(options);
