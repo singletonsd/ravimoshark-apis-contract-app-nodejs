@@ -4,7 +4,7 @@ import jsyaml from "js-yaml";
 import * as path from "path";
 // From TypeORM
 import "reflect-metadata";
-import { Connection, createConnection } from "typeorm";
+import { createConnection, createConnections } from "typeorm";
 // import { DatabaseInit } from "./databases/DatabaseInit";
 
 import * as dotenv from "dotenv";
@@ -34,7 +34,7 @@ const options = {
 
 // TODO: change the path of the documentation to URL of gitlab.
 const spec = fs.readFileSync(
-  path.join(__dirname, "./api/swagger.yaml"),
+  path.join(__dirname, "../src/api/swagger.yaml"),
   "utf8"
 );
 const swaggerDoc = jsyaml.safeLoad(spec);
@@ -56,8 +56,33 @@ if (process.env.SWAGGER_BASE_PATH) {
 // Enable JWT tokens
 // require("./utils/jwt-util").addJWT(app, SWAGGER_BASE_PATH);
 
-createConnection()
-    .then(async (connection: Connection) => {
+let connectionFunction;
+if (fs.existsSync("./ormconfig.json")) {
+    LoggerUtility.info("Found ormconfig.json file in root folder.");
+    connectionFunction = createConnection();
+} else {
+    const specDB = fs.readFileSync(
+        path.join(__dirname, "../src/assets/ormconfig.json"),
+        "utf8"
+      );
+    const dbConf = JSON.parse(specDB);
+    dbConf[0].entities = [];
+    if (process.env.NODE_ENV === "production") {
+        LoggerUtility.info("Working with JS files");
+        dbConf[0].entities.push("build/databases/entities/**/*.js");
+    } else {
+        LoggerUtility.info("Working with TS files");
+        dbConf[0].entities.push("src/databases/entities/**/*.ts");
+    }
+    const password = process.env.db_password;
+    const user = process.env.db_user;
+    dbConf[0].username = user;
+    dbConf[0].password = password;
+    connectionFunction = createConnections(dbConf);
+}
+
+connectionFunction
+    .then(async (connection) => {
         swaggerTools.configure(options);
         swaggerTools.initialize(swaggerDoc, app, () => {
             LoggerUtility.debug("Swagger OAS middleware initialized.");
@@ -66,6 +91,7 @@ createConnection()
     .catch((error) => {
         LoggerUtility.error("TYPEORM: Error conneting with DB.");
         LoggerUtility.error(error);
+        process.exit(1);
     });
 
 export default app;

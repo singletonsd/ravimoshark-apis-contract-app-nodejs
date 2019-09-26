@@ -7,7 +7,7 @@
     "check": "npm-check",
     "postinstall": "./scripts/init_service.sh d",
     "start-ts": "ts-node src/server.ts -r dotenv/config",
-    "start": "npm run tsc && node build/server.js",
+    "start": "npm run tsc && NODE_ENV=production node build/server.js",
     "lint": "tslint --project ./",
     "tsc": "rm -rf build && tsc",
     "docker-generate": "./scripts/docker/docker_image_generate.sh y",
