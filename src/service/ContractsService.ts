@@ -5,7 +5,7 @@ import { Contracts as ContractsDB } from "../databases/entities";
 import { DatabaseUtilities } from "../databases/utils/DatabaseUtils";
 import { Contracts, Deleted, RefContract } from "../models";
 import { LoggerUtility } from "../utils/LoggerUtility";
-import { ParametersComplete, Utilities, ParametersIdDeleted } from "../utils/utilities";
+import { ParametersComplete, ParametersIdDeleted, Utilities } from "../utils/utilities";
 import { VALID_RESPONSES } from "../utils/ValidResponses";
 
 const SERVICE_NAME = "ContractsService";
@@ -129,7 +129,7 @@ export class ContractsService {
         if (!prevAccount) {
             LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME
                 , "not exists with id", params.id, "and deleted", params.deleted.toString());
-            reject(VALID_RESPONSES.ERROR.NOT_EXIST.ACCOUNT);
+            reject(VALID_RESPONSES.ERROR.NOT_EXIST.CONTRACT);
             return;
         }
         LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "got", prevAccount.refContract);
@@ -158,7 +158,7 @@ export class ContractsService {
       LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
       const object = DatabaseUtilities.getFindObject(params, ContractsDB);
       if (!object) {
-          LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME, "order param malformed", orderBy);
+          LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME, "order param malformed", params.orderBy);
           reject(VALID_RESPONSES.ERROR.PARAMS.MALFORMED.ORDERBY);
           return;
       }

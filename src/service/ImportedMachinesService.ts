@@ -1,12 +1,12 @@
 "use strict";
 
 import { Deleted, ImportedMachines, RefContract } from "src/models";
+import { getConnection } from "typeorm";
 import { ImportedMachines as ImportedMachinesDB } from "../databases/entities";
 import { DatabaseUtilities } from "../databases/utils/DatabaseUtils";
 import { LoggerUtility } from "../utils/LoggerUtility";
-import { Utilities, ParametersComplete, ParametersIdDeleted } from "../utils/utilities";
+import { ParametersComplete, ParametersIdDeleted, Utilities } from "../utils/utilities";
 import { VALID_RESPONSES } from "../utils/ValidResponses";
-import { getConnection } from "typeorm";
 
 const SERVICE_NAME = "ImportedMachinesService";
 
@@ -93,7 +93,7 @@ export class ImportedMachinesService<T> {
         if (!prevAccount) {
             LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME
                 , "not exists with id", params.id, "and deleted", params.deleted.toString());
-            reject(VALID_RESPONSES.ERROR.NOT_EXIST.ACCOUNT);
+            reject(VALID_RESPONSES.ERROR.NOT_EXIST.IMPORTED_MACHINE);
             return;
         }
         LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "got", prevAccount.refContract);

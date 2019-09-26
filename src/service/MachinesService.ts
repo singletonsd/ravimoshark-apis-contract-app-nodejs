@@ -1,12 +1,12 @@
 "use strict";
 
-import { Machine as MachineDB, Machine } from "../databases/entities";
+import { getConnection } from "typeorm";
+import { Machine, Machine as MachineDB } from "../databases/entities";
 import { DatabaseUtilities } from "../databases/utils/DatabaseUtils";
 import { Deleted, Machines, RefContract } from "../models";
 import { LoggerUtility } from "../utils/LoggerUtility";
-import { ParametersComplete, Utilities, ParametersIdDeleted } from "../utils/utilities";
+import { ParametersComplete, ParametersIdDeleted, Utilities } from "../utils/utilities";
 import { VALID_RESPONSES } from "../utils/ValidResponses";
-import { getConnection } from "typeorm";
 
 const SERVICE_NAME = "MachinesService";
 
