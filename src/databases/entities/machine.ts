@@ -48,10 +48,10 @@ export class Machine {
     public deleted?: boolean;
 
     @OneToMany(() => ImportedMachines, (importedMachines: ImportedMachines) => importedMachines.machine)
-    public importedMachines?: Promise<Array<ImportedMachines>>;
+    public importedMachines?: Array<ImportedMachines>;
 
     @OneToMany(() => Location, (location: Location) => location.machine)
-    public locations?: Promise<Array<Location>>;
+    public locations?: Array<Location>;
 
     public constructor(init?: Partial<Machine>) {
         Object.assign(this, init);

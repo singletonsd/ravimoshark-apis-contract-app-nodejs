@@ -21,13 +21,9 @@ export const VALID_RESPONSES = {
         EXIST: "error.exist",
         NOT_DELETED: "error.not_deleted",
         NOT_EXIST: {
-            ACCOUNT: "error.not_exist.account",
-            CARRIER: "error.not_exist.carrier",
-            DELIVERY: "error.not_exist.delivery",
-            LOCATION: "error.not_exist.location",
-            MAIN: "error.not_exist.main",
-            MEMBERSHIP: "error.not_exist.membership",
-            USER: "error.not_exist.user"
+            CONTRACT: "error.not_exist.account",
+            IMPORTED_MACHINE: "error.not_exist.delivery",
+            MACHINE: "error.not_exist.carrier"
         },
         PARAMS: {
             MALFORMED: {

@@ -20,10 +20,10 @@ export class Location {
 
     @ManyToOne(() => Contracts, (contracts: Contracts) => contracts.locations, { nullable: false })
     @JoinColumn({ name: "RefContract" })
-    public refContract?: Contracts | null;
+    public contract?: Contracts | null;
 
-    @RelationId((location: Location) => location.refContract)
-    public refContractId?: Array<number>;
+    @RelationId((location: Location) => location.contract)
+    public refContract?: Array<number>;
 
     @Column("datetimeoffset", {
         default: () => "sysdatetimeoffset()",

@@ -36,9 +36,11 @@ module.exports.editMachine = (req: CustomRequest, res: CustomResponse, next: Cus
 };
 
 module.exports.getMachineById = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const id = req.swagger.params.id.value;
-  const deleted = req.swagger.params.deleted.value;
-  MachinesService.getMachineById(id, deleted)
+  const params: ParametersIdDeleted = Utilities.checkIdAndDelete(req.swagger.params, res);
+  if (!params) {
+    return;
+  }
+  MachinesService.getMachineById(params)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
@@ -51,8 +53,7 @@ module.exports.getMachines = (req: CustomRequest, res: CustomResponse, next: Cus
   if (!params) {
     return;
   }
-  MachinesService.getMachines(params.skip, params.limit, params.orderBy, params.filter
-    , params.deleted, params.metadata)
+  MachinesService.getMachines(params)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {

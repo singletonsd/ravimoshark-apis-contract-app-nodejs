@@ -118,7 +118,7 @@ export class DatabaseUtilities {
         "RefContract.RefClient"
       ];
     } else if (entity === Machine) {
-      finalRelations = ["locations", "refArticle"];
+      finalRelations = ["piece", "locations"];
     } else if (entity === Pieces) {
       finalRelations = [];
     }
