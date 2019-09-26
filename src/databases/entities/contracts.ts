@@ -98,7 +98,7 @@ export class Contracts {
     @OneToMany(() => ImportedMachines, (importedMachines: ImportedMachines) => importedMachines.contract)
     public importedMachines?: Array<ImportedMachines>;
 
-    @OneToMany(() => Location, (location: Location) => location.refContract, { })
+    @OneToMany(() => Location, (location: Location) => location.contract, { })
     public locations?: Array<Location>;
 
     public constructor(init?: Partial<Contracts>) {

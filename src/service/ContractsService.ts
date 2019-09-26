@@ -169,10 +169,6 @@ export class ContractsService {
           resolve();
           return;
       }
-      const apiAccounts = [];
-      for (const us of accounts) {
-          apiAccounts.push(new Contracts({ model: us}));
-      }
       LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "got ", accounts.length);
       resolve(Utilities.getMetadataFormat(accounts, total, params));
       return;
