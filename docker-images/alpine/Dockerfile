@@ -30,7 +30,7 @@ WORKDIR /usr/app
 
 COPY --from=builder /usr/app/node_modules node_modules
 COPY src src/
-COPY build build/
+COPY dist dist/
 COPY package.json .
 COPY tsconfig.json .
 
