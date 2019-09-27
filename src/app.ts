@@ -75,8 +75,8 @@ if (fs.existsSync("./ormconfig.json")) {
         LoggerUtility.info("Working with TS files");
         dbConf[0].entities.push("src/databases/entities/**/*.ts");
     }
-    const password = process.env.db_password;
-    const user = process.env.db_user;
+    const password = process.env.DB_PASSWORD;
+    const user = process.env.DB_USER;
     dbConf[0].username = user;
     dbConf[0].password = password;
     connectionFunction = createConnections(dbConf);

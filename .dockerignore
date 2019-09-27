@@ -4,7 +4,6 @@
 .swagger-codegen-ignore
 README.md
 /data/
-/assets/
 .env
 ecosystem.config.js
 /keys/

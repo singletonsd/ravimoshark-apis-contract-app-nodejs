@@ -1,12 +1,12 @@
 ARG BASE_IMAGE_NAME=node
-ARG BASE_IMAGE_TAG=8-alpine
+ARG BASE_IMAGE_TAG=6-stretch
 
 FROM ${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG} AS builder
 
 ARG NODE_ENV=development
 ENV NODE_ENV=${NODE_ENV}
 
-RUN apk add --no-cache \
+RUN apt-get update -qq && apt-get install -qqy \
     python make gcc g++
 
 WORKDIR /usr/app
