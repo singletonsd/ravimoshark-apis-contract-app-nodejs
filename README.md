@@ -44,7 +44,6 @@ You can choose to execute the server in two different operative systems:
 - **stretch:** it uses base image node:-stretch. Available versions:
   - *8-stretch*
   - *6-stretch*
-  - *4-stretch*
 
 ### USING NPM
 
@@ -63,9 +62,9 @@ npm start
 
 - `API_VERSION`: api version image. Default: latest.
 - `API_BASE`: api base image (alpine or stretch). Default: alpine.
-- `SWAGGER_HOST`: url of api. Default: localhost:3000.
-- `SWAGGER_BASE_PATH`: path inside url api. Default: /.
+- `SWAGGER_URL`: url of api.
 - `APP_PORT`: port to connect to the api. Default: 8000.
+- `HOST_PORT`: port to map to host. Default: 80.
 - `DB_USER`: user for database connection.
 - `DB_PASSWORD`: password for database connection.
 

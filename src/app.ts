@@ -43,12 +43,11 @@ const swaggerDoc = jsyaml.safeLoad(spec);
 if (process.env.SWAGGER_HOST) {
     swaggerDoc.host = process.env.SWAGGER_HOST;
 }
-let SWAGGER_BASE_PATH = process.env.SWAGGER_BASE_PATH;
-if (!SWAGGER_BASE_PATH) {
-    SWAGGER_BASE_PATH = "/";
-}
-if (process.env.SWAGGER_BASE_PATH) {
-    swaggerDoc.basePath = process.env.SWAGGER_BASE_PATH;
+
+if (process.env.SWAGGER_URL) {
+	LoggerUtility.info("Found environment URL", process.env.SWAGGER_URL);
+    const servers: Array<{ url: string}> = swaggerDoc.servers;
+    servers.unshift({ url: process.env.SWAGGER_URL });
 }
 
 // Allow cross origin

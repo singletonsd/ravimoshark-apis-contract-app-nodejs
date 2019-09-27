@@ -4,10 +4,9 @@ services:
   api:
     image: registry.gitlab.com/ravimosharksas/apis/contract/app-nodejs/${API_BASE:-alpine}:${API_VERSION:8-alpine-latest}
     environment:
-      SWAGGER_HOST: ${SWAGGER_HOST:-localhost:3000}
-      SWAGGER_BASE_PATH: ${SWAGGER_BASE_PATH:-/api/}
+      # SWAGGER_URL:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       APP_PORT: ${APP_PORT:-8000}
     ports:
-      - "${APP_PORT:-3000}:3000"
+      - "${HOST_PORT:-80}:${APP_PORT:-8000}"
