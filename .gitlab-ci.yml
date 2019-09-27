@@ -17,6 +17,27 @@ stages:
   - test_dynamic
   - package
 
+install:
+  stage: install
+  before_script:
+    - apk add --no-cache python make gcc g++
+  script:
+    - npm install --no-optional
+  cache:
+    paths:
+      - node_modules/
+  artifacts:
+    paths:
+      - node_modules/
+  except:
+    - schedules
+  only:
+    changes:
+      - config/**/*
+      - ./*.json
+      - src/**/*
+      - .gitlab-ci.yml
+
 package-image:
   stage: package
   services:
