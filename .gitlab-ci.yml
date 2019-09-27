@@ -2,7 +2,7 @@ image: "${GLOBAL_IMAGE_NAME}:${GLOBAL_IMAGE_TAG}"
 
 include:
   - project: 'singletonsd/pipelines/npm'
-    file: '/src/.gitlab-ci-test-static.yml'
+    file: '/src/.gitlab-ci-main.yml'
 
 variables:
   GLOBAL_IMAGE_NAME: "node"
