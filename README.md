@@ -22,7 +22,7 @@ open http://localhost:8000/docs
 
 ### USING DOCKER
 
-To use this container with docker, just type `docker-compose up` or execute the following script:
+To use this container with docker, just type `docker-compose -f docker-compose/main.yaml up` or execute the following script:
 
 ```bash
 docker run -it --rm -e DB_PASSWORD= -e DB_USER=Ravimo2015 \
@@ -60,6 +60,7 @@ npm start
 ## ENVIRONMENT VARIABLES
 
 - `API_VERSION`: api version image. Default: latest.
+- `API_BASE`: api base image (alpine or stretch). Default: alpine.
 - `SWAGGER_HOST`: url of api. Default: localhost:3000.
 - `SWAGGER_BASE_PATH`: path inside url api. Default: /.
 - `APP_PORT`: port to connect to the api. Default: 8000.
