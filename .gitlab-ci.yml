@@ -40,6 +40,7 @@ install:
       - .gitlab-ci.yml
 
 package-image:
+  image: docker:latest
   stage: package
   services:
     - docker:dind
