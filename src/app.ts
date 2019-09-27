@@ -45,7 +45,7 @@ if (process.env.SWAGGER_HOST) {
 }
 
 if (process.env.SWAGGER_URL) {
-	LoggerUtility.info("Found environment URL", process.env.SWAGGER_URL);
+    LoggerUtility.info("Found environment URL", process.env.SWAGGER_URL);
     const servers: Array<{ url: string}> = swaggerDoc.servers;
     servers.unshift({ url: process.env.SWAGGER_URL });
 }
@@ -69,7 +69,7 @@ if (fs.existsSync("./ormconfig.json")) {
     dbConf[0].entities = [];
     if (process.env.NODE_ENV === "production") {
         LoggerUtility.info("Working with JS files");
-        dbConf[0].entities.push("build/databases/entities/**/*.js");
+        dbConf[0].entities.push("dist/databases/entities/**/*.js");
     } else {
         LoggerUtility.info("Working with TS files");
         dbConf[0].entities.push("src/databases/entities/**/*.ts");
