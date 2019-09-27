@@ -1,5 +1,6 @@
 image: "${GLOBAL_IMAGE_NAME}:${GLOBAL_IMAGE_TAG}"
 
+# https://gitlab.com/patoperpetua/pipelines-npm/tree/master/src
 include:
   - project: 'singletonsd/pipelines/npm'
     file: '/src/.gitlab-ci-main.yml'
@@ -59,6 +60,7 @@ package-image:
     - ./docker_build_multiple_images.sh -c=${CI_COMMIT_SHA} -p
   only:
     changes:
+      - config/**/*
+      - ./*.json
+      - src/**/*
       - .gitlab-ci.yml
-      - scripts/**/*
-      - docker-images/**/*

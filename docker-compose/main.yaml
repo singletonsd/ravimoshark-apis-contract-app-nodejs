@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   api:
-    image: registry.gitlab.com/ravimosharksas/apis/contract/app-nodejs/${API_BASE:-alpine}:${API_VERSION:-latest}
+    image: registry.gitlab.com/ravimosharksas/apis/contract/app-nodejs/${API_BASE:-alpine}:${API_VERSION:8-alpine-latest}
     environment:
       SWAGGER_HOST: ${SWAGGER_HOST:-localhost:3000}
       SWAGGER_BASE_PATH: ${SWAGGER_BASE_PATH:-/api/}
