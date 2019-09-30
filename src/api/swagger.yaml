@@ -567,11 +567,10 @@ components:
       type: object
       properties:
         refClient:
-          type: integer
-          format: int64
-        nom:
           type: string
-        abrege:
+        name:
+          type: string
+        nickname:
           type: string
     Contracts:
       description: Client's contract.

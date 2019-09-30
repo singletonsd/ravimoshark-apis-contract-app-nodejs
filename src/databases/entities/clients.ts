@@ -18,7 +18,7 @@ export class Clients {
         name: "Abrege",
         nullable: true
     })
-    public abrege?: string | null;
+    public nickname?: string | null;
 
     @Column("nvarchar", {
         length: 100,
@@ -33,7 +33,7 @@ export class Clients {
         name: "Nom",
         nullable: true
     })
-    public nom?: string | null;
+    public name?: string | null;
 
     @Column("nvarchar", {
         length: 100,
