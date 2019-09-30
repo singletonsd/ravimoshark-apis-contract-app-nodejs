@@ -1,3 +1,5 @@
+import { Reviewed } from "src/models/reviewed";
+import { Valid } from "src/models/valid";
 import { BaseEntity, FindManyOptions, FindOneOptions, ObjectType } from "typeorm";
 import { Deleted } from "../../models";
 import { LoggerUtility } from "../../utils/LoggerUtility";
@@ -56,6 +58,12 @@ export class DatabaseUtilities {
       take: params.limit,
       where: this.addDeletedParam(params.deleted, whereObject)
     };
+    if (params.reviewed) {
+      this.addReviewedParam(params.reviewed, object.where);
+    }
+    if (params.valid) {
+      this.addValidParam(params.valid, object.where);
+    }
     if (params.orderBy) {
       let order: object;
       try {
@@ -87,6 +95,30 @@ export class DatabaseUtilities {
       case Deleted.ACTIVE:
         params.deleted = false;
         break;
+    }
+    return params;
+  }
+
+  public static addValidParam(valid: Valid, params: any): object {
+    if (!params) {
+      params = {};
+    }
+    if (valid === "INVALID") {
+      params.valid = false;
+    } else if ( valid === "VALID") {
+      params.valid = true;
+    }
+    return params;
+  }
+
+  public static addReviewedParam(reviewed: Reviewed, params: any): object {
+    if (!params) {
+      params = {};
+    }
+    if (reviewed === "NOT_REVIEWED") {
+      params.reviewed = false;
+    } else if ( reviewed === "REVIEWED") {
+      params.reviewed = true;
     }
     return params;
   }

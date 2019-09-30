@@ -1,8 +1,9 @@
+import { Reviewed } from "src/models/reviewed";
+import { Valid } from "src/models/valid";
 import { SwaggerRequestParameters } from "swagger-tools";
 import { Deleted } from "../models";
 import { Metadata } from "../models/metadata";
-import { CustomRequest, CustomResponse } from "./customsHandlers";
-import { LoggerUtility } from "./LoggerUtility";
+import { CustomResponse } from "./customsHandlers";
 import { VALID_RESPONSES } from "./ValidResponses";
 import { ResponsePayload } from "./writer";
 
@@ -73,7 +74,9 @@ export class Utilities {
             limit: this.checkVariableNotNull("limit", parameters),
             metadata: this.checkVariableNotNull("metadata", parameters),
             orderBy: this.checkVariableNotNull("orderBy", parameters),
-            skip: this.checkVariableNotNull("skip", parameters)
+            reviewed: this.checkVariableNotNull("reviewed", parameters),
+            skip: this.checkVariableNotNull("skip", parameters),
+            valid: this.checkVariableNotNull("valid", parameters)
         };
         if (!response.skip || response.skip < 0) {
             response.skip = 0;
@@ -146,6 +149,6 @@ export interface ParametersComplete extends ParametersIdDeleted {
     orderBy: string | null;
     filter: string | null;
     metadata: boolean | null;
-    idUser?: number | null;
-    idAccount?: number | null;
+    valid?: Valid | null;
+    reviewed?: Reviewed | null;
 }

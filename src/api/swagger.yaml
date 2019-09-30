@@ -30,6 +30,49 @@ servers:
   - url: 'https://ravimoshark.com/back/apis/contract/v1'
   - url: 'https://ravimoshark.com/back/apis/contract/latest'
 paths:
+  /clients:
+    get:
+      tags:
+        - Clients
+      summary: Get all clients.
+      description: Get all clients.
+      operationId: getClients
+      parameters:
+        - $ref: '#/components/parameters/Skip'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/OrderBy'
+        - $ref: '#/components/parameters/Filter'
+        - $ref: '#/components/parameters/Deleted'
+        - $ref: '#/components/parameters/Metadata'
+      responses:
+        '200':
+          description: Request OK.
+          headers:
+            - $ref: '#/components/headers/Limit'
+            - $ref: '#/components/headers/Remaining'
+            - $ref: '#/components/headers/Reset'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    $ref: '#/components/schemas/Metadata'
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Clients'
+        '204':
+          $ref: '#/components/responses/204'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+      x-swagger-router-controller: Clients
   /contracts:
     get:
       tags:
@@ -44,6 +87,8 @@ paths:
         - $ref: '#/components/parameters/Filter'
         - $ref: '#/components/parameters/Deleted'
         - $ref: '#/components/parameters/Metadata'
+        - $ref: '#/components/parameters/Valid'
+        - $ref: '#/components/parameters/Reviewed'
       responses:
         '200':
           description: Request OK.
@@ -191,6 +236,7 @@ paths:
         - $ref: '#/components/parameters/Filter'
         - $ref: '#/components/parameters/Deleted'
         - $ref: '#/components/parameters/Metadata'
+        - $ref: '#/components/parameters/Reviewed'
       responses:
         '200':
           description: Request OK.
@@ -471,6 +517,49 @@ paths:
         '405':
           $ref: '#/components/responses/405'
       x-swagger-router-controller: Machines
+  /pieces:
+    get:
+      tags:
+        - Pieces
+      summary: Get all pieces.
+      description: Get all pieces.
+      operationId: getPieces
+      parameters:
+        - $ref: '#/components/parameters/Skip'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/OrderBy'
+        - $ref: '#/components/parameters/Filter'
+        - $ref: '#/components/parameters/Deleted'
+        - $ref: '#/components/parameters/Metadata'
+      responses:
+        '200':
+          description: Request OK.
+          headers:
+            - $ref: '#/components/headers/Limit'
+            - $ref: '#/components/headers/Remaining'
+            - $ref: '#/components/headers/Reset'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    $ref: '#/components/schemas/Metadata'
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Pieces'
+        '204':
+          $ref: '#/components/responses/204'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+      x-swagger-router-controller: Pieces
 components:
   schemas:
     Clients:
@@ -657,6 +746,20 @@ components:
         refContract:
           type: integer
           format: int64
+    Reviewed:
+      type: string
+      default: REVIEWED
+      enum:
+        - REVIEWED
+        - NOT_REVIEWED
+        - ALL
+    Valid:
+      type: string
+      default: VALID
+      enum:
+        - VALID
+        - INVALID
+        - ALL
   responses:
     '204':
       description: Response is empty.
@@ -740,6 +843,7 @@ components:
       schema:
         type: integer
         format: int32
+        default: 10
     Metadata:
       name: metadata
       description: If metadata is needed (for pagination controls)
@@ -747,6 +851,7 @@ components:
       required: false
       schema:
         type: boolean
+        default: false
     OrderBy:
       name: orderBy
       description: order by property.
@@ -762,6 +867,13 @@ components:
       schema:
         type: integer
         format: int64
+    Reviewed:
+      name: reviewed
+      description: only reviewed data.
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/Reviewed'
     Skip:
       name: skip
       description: number of item to skip
@@ -770,6 +882,14 @@ components:
       schema:
         type: integer
         format: int32
+        default: 0
+    Valid:
+      name: valid
+      description: Only valid data.
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/Valid'
   headers:
     Limit:
       description: The number of allowed requests in the current period
