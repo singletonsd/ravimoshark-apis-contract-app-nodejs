@@ -12,7 +12,7 @@
 export type Valid = "VALID" | "INVALID" | "ALL";
 
 export const Deleted = {
-    ALL: "ALL" as Deleted,
-    INVALID: "INVALID" as Deleted,
-    VALID: "VALID" as Deleted
+    ALL: "ALL" as Valid,
+    INVALID: "INVALID" as Valid,
+    VALID: "VALID" as Valid
 };
