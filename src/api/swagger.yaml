@@ -736,7 +736,7 @@ components:
       properties:
         refArticle:
           type: string
-        designation:
+        name:
           type: string
     RefContract:
       description: Contract's reference.

@@ -17,7 +17,7 @@ export class Pieces {
         name: "DesignationArticle",
         nullable: true
     })
-    public designationArticle?: string | null;
+    public name?: string | null;
 
     @Column("nvarchar", {
         length: 100,
