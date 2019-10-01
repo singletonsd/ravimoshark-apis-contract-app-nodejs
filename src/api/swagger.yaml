@@ -702,8 +702,11 @@ components:
           $ref: '#/components/schemas/Pieces'
         numSerie:
           type: string
-        refContract:
-          type: string
+        idLocations:
+          type: array
+          items:
+            type: integer
+            format: int64
         createdAt:
           type: string
           format: date
