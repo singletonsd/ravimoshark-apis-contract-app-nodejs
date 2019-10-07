@@ -79,10 +79,10 @@ export class Utilities {
             valid: this.checkVariableNotNull("valid", parameters)
         };
         if (!response.skip || response.skip < 0) {
-            response.skip = 0;
+            // response.skip = 0;
         }
         if (!response.limit || response.limit < 0) {
-            response.limit = 10;
+            // response.limit = 10;
         }
         // TODO: check if any variable is null.
         if (res && error) {

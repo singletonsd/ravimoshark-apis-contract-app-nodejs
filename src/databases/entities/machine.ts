@@ -4,7 +4,7 @@ import { Location } from "./location";
 import { Pieces } from "./pieces";
 
 @Entity("Machine")
-@Index("UQ_Machine_NumSerie", ["numSerie"], { unique: true })
+@Index("UQ_Machine_NumSerie", ["serialNumber"], { unique: true })
 export class Machine {
 
     @PrimaryGeneratedColumn({
@@ -17,7 +17,7 @@ export class Machine {
         name: "NumSerie",
         nullable: false
     })
-    public numSerie?: string;
+    public serialNumber?: string;
 
     @ManyToOne(() => Pieces, (pieces: Pieces) => pieces.machines, { nullable: false })
     @JoinColumn({ name: "RefArticle" })

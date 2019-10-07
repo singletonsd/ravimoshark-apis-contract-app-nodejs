@@ -700,7 +700,7 @@ components:
           type: string
         piece:
           $ref: '#/components/schemas/Pieces'
-        numSerie:
+        serialNumber:
           type: string
         idLocations:
           type: array
@@ -753,7 +753,7 @@ components:
       default: REVIEWED
       enum:
         - REVIEWED
-        - NOT_REVIEWED
+        - UNREVIEWED
         - ALL
     Valid:
       type: string
@@ -841,7 +841,7 @@ components:
       name: limit
       description: max records to return
       in: query
-      required: true
+      required: false
       schema:
         type: integer
         format: int32
@@ -880,7 +880,7 @@ components:
       name: skip
       description: number of item to skip
       in: query
-      required: true
+      required: false
       schema:
         type: integer
         format: int32
