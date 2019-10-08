@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Swagger12Request, SwaggerRequestParameters } from "swagger-tools";
 
 export interface CustomNext extends NextFunction {

@@ -8,13 +8,18 @@ import { VALID_RESPONSES } from "./ValidResponses";
 import { ResponsePayload } from "./writer";
 
 export class Utilities {
-    public static checkVariableNotNull(name: string, parameters: SwaggerRequestParameters, res?: CustomResponse): any {
+    public static checkVariableNotNull(parameters: SwaggerRequestParameters, res?: CustomResponse, name?: string): any {
         let error: boolean = true;
         let value = null;
-        if (parameters[name]) {
-            value = parameters[name].value;
+        if (name) {
+            if (parameters[name]) {
+                value = parameters[name].value;
+                error = false;
+                // LoggerUtility..info(name,"=",value);
+            }
+        } else {
+            value = parameters;
             error = false;
-            // LoggerUtility..info(name,"=",value);
         }
         if (res && error) {
             this.sendError(res, name);
@@ -26,7 +31,7 @@ export class Utilities {
             names: Array<string>, parameters: SwaggerRequestParameters, res?: CustomResponse): any {
         const responses = {};
         for (const name of names) {
-            const parameter = this.checkVariableNotNull(name, parameters, res);
+            const parameter = this.checkVariableNotNull(parameters, res, name);
             if (!parameter) {
                 return null;
             }
@@ -35,23 +40,23 @@ export class Utilities {
         return responses;
     }
     public static checkId(parameters: SwaggerRequestParameters, res?: CustomResponse): number | null {
-        return this.checkVariableNotNull("id", parameters, res);
+        return this.checkVariableNotNull(parameters, res, "id");
     }
 
     public static checkDeleted(parameters: SwaggerRequestParameters, res?: CustomResponse): Deleted | null {
-        return this.checkVariableNotNull("deleted", parameters, res);
+        return this.checkVariableNotNull(parameters, res, "deleted");
     }
 
     public static checkFilter(parameters: SwaggerRequestParameters, res?: CustomResponse): string | null {
-        return this.checkVariableNotNull("filter", parameters, res);
+        return this.checkVariableNotNull(parameters, res, "filter");
     }
 
     public static checkAndDelete(
             parameters: SwaggerRequestParameters, idName?: string, res?: CustomResponse): ParametersIdDeleted | null {
         const response: ParametersIdDeleted = {
             deleted: this.checkDeleted(parameters),
-            id: this.checkVariableNotNull(idName, parameters),
-            idUser: this.checkVariableNotNull("idUser", parameters)
+            id: this.checkVariableNotNull(parameters, undefined, idName),
+            idUser: this.checkVariableNotNull(parameters, undefined, "idUser")
         };
         if (!response.deleted || (response.id !== 0 && !response.id)) {
             return null;
@@ -69,14 +74,14 @@ export class Utilities {
         const error = false;
         const response: ParametersComplete = {
             deleted: this.checkDeleted(parameters),
-            filter: this.checkVariableNotNull("filter", parameters),
+            filter: this.checkVariableNotNull(parameters, undefined, "filter"),
             id: this.checkId(parameters),
-            limit: this.checkVariableNotNull("limit", parameters),
-            metadata: this.checkVariableNotNull("metadata", parameters),
-            orderBy: this.checkVariableNotNull("orderBy", parameters),
-            reviewed: this.checkVariableNotNull("reviewed", parameters),
-            skip: this.checkVariableNotNull("skip", parameters),
-            valid: this.checkVariableNotNull("valid", parameters)
+            limit: this.checkVariableNotNull(parameters, undefined, "limit"),
+            metadata: this.checkVariableNotNull(parameters, undefined, "metadata"),
+            orderBy: this.checkVariableNotNull(parameters, undefined, "orderBy"),
+            reviewed: this.checkVariableNotNull(parameters, undefined, "reviewed"),
+            skip: this.checkVariableNotNull(parameters, undefined, "skip"),
+            valid: this.checkVariableNotNull(parameters, undefined, "valid")
         };
         if (!response.skip || response.skip < 0) {
             // response.skip = 0;

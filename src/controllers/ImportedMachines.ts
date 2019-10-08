@@ -6,7 +6,7 @@ import { ParametersComplete, ParametersIdDeleted, Utilities } from "../utils/uti
 import { ResponsePayload } from "../utils/writer";
 
 module.exports.addImportedMachine = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const body = Utilities.checkVariableNotNull("body", req.swagger.params, res);
+  const body = Utilities.checkVariableNotNull(req.swagger.params.undefined.originalValue, res);
   if (!body) {
     return;
   }
@@ -19,7 +19,7 @@ module.exports.addImportedMachine = (req: CustomRequest, res: CustomResponse, ne
 };
 
 module.exports.deleteImportedMachine = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const id = Utilities.checkVariableNotNull("id", req.swagger.params, res);
+  const id = Utilities.checkVariableNotNull(req.swagger.params, res, "id");
   if (!id) {
     return;
   }
@@ -32,7 +32,7 @@ module.exports.deleteImportedMachine = (req: CustomRequest, res: CustomResponse,
 };
 
 module.exports.editImportedMachine = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const body = Utilities.checkVariableNotNull("body", req.swagger.params, res);
+  const body = Utilities.checkVariableNotNull(req.swagger.params.undefined.originalValue, res);
   if (!body) {
     return;
   }

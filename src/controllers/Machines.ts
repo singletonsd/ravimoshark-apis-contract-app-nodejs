@@ -6,7 +6,7 @@ import { ParametersComplete, ParametersIdDeleted, Utilities } from "../utils/uti
 import { ResponsePayload } from "../utils/writer";
 
 module.exports.addMachine = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const body = Utilities.checkVariableNotNull("body", req.swagger.params, res);
+  const body = Utilities.checkVariableNotNull(req.swagger.params.undefined.originalValue, res);
   MachinesService.addMachine(body)
     .then((response: any) => {
       ResponsePayload.response(res, response);
@@ -26,7 +26,7 @@ module.exports.deleteMachine = (req: CustomRequest, res: CustomResponse, next: C
 };
 
 module.exports.editMachine = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const body = Utilities.checkVariableNotNull("body", req.swagger.params, res);
+  const body = Utilities.checkVariableNotNull(req.swagger.params.undefined.originalValue, res);
   MachinesService.editMachine(body)
     .then((response: any) => {
       ResponsePayload.response(res, response);

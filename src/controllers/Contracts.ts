@@ -6,7 +6,7 @@ import { ParametersComplete, ParametersIdDeleted, Utilities } from "../utils/uti
 import { ResponsePayload } from "../utils/writer";
 
 module.exports.addContract = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const body = Utilities.checkVariableNotNull("body", req.swagger.params, res);
+  const body = Utilities.checkVariableNotNull(req.swagger.params.undefined.originalValue, res);
   if (!body) {
     return;
   }
@@ -19,7 +19,7 @@ module.exports.addContract = (req: CustomRequest, res: CustomResponse, next: Cus
 };
 
 module.exports.deleteContract = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const refContract = Utilities.checkVariableNotNull("refContract", req.swagger.params, res);
+  const refContract = Utilities.checkVariableNotNull(req.swagger.params, res, "refContract");
   if (!refContract) {
     return;
   }
@@ -32,7 +32,7 @@ module.exports.deleteContract = (req: CustomRequest, res: CustomResponse, next: 
 };
 
 module.exports.editContract = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const body = Utilities.checkVariableNotNull("body", req.swagger.params, res);
+  const body = Utilities.checkVariableNotNull(req.swagger.params.undefined.originalValue, res);
   if (!body) {
     return;
   }
