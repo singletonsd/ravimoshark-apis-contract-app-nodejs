@@ -1,16 +1,17 @@
 "use strict";
 
+import { Contracts as ContractsDB } from "../databases/entities";
 import { ContractsService } from "../service";
 import { CustomNext, CustomRequest, CustomResponse } from "../utils/customsHandlers";
 import { ParametersComplete, ParametersIdDeleted, Utilities } from "../utils/utilities";
 import { ResponsePayload } from "../utils/writer";
 
 module.exports.addContract = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const body = Utilities.checkVariableNotNull(req.swagger.params.undefined.originalValue, res);
+  const body: ContractsDB = Utilities.checkVariableNotNull(req.swagger.params.undefined.originalValue, res);
   if (!body) {
     return;
   }
-  ContractsService.addContract(body)
+  ContractsService.add(body)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
@@ -23,7 +24,7 @@ module.exports.deleteContract = (req: CustomRequest, res: CustomResponse, next: 
   if (!refContract) {
     return;
   }
-  ContractsService.deleteContract(refContract)
+  ContractsService.delete(refContract)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
@@ -32,11 +33,11 @@ module.exports.deleteContract = (req: CustomRequest, res: CustomResponse, next: 
 };
 
 module.exports.editContract = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const body = Utilities.checkVariableNotNull(req.swagger.params.undefined.originalValue, res);
+  const body: ContractsDB = Utilities.checkVariableNotNull(req.swagger.params.undefined.originalValue, res);
   if (!body) {
     return;
   }
-  ContractsService.editContract(body)
+  ContractsService.edit(body)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
@@ -49,7 +50,7 @@ module.exports.getContractById = (req: CustomRequest, res: CustomResponse, next:
   if (!params) {
       return;
   }
-  ContractsService.getContractById(params)
+  ContractsService.getById(params)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
@@ -62,7 +63,7 @@ module.exports.getContracts = (req: CustomRequest, res: CustomResponse, next: Cu
   if (!params) {
     return;
   }
-  ContractsService.getContracts(params)
+  ContractsService.get(params)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {

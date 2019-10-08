@@ -21,7 +21,7 @@ export class PiecesService {
    * metadata Boolean If metadata is needed (for pagination controls) (optional)
    * returns inline_response_200
    */
-  public static getPieces(
+  public static get(
     params: ParametersComplete
   ) {
     const FUNCTION_NAME = "get";

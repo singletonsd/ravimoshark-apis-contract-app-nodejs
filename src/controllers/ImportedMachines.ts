@@ -10,7 +10,7 @@ module.exports.addImportedMachine = (req: CustomRequest, res: CustomResponse, ne
   if (!body) {
     return;
   }
-  ImportedMachinesService.addImportedMachine(body)
+  ImportedMachinesService.add(body)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
@@ -23,7 +23,7 @@ module.exports.deleteImportedMachine = (req: CustomRequest, res: CustomResponse,
   if (!id) {
     return;
   }
-  ImportedMachinesService.deleteImportedMachine(id)
+  ImportedMachinesService.delete(id)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
@@ -36,7 +36,7 @@ module.exports.editImportedMachine = (req: CustomRequest, res: CustomResponse, n
   if (!body) {
     return;
   }
-  ImportedMachinesService.editImportedMachine(body)
+  ImportedMachinesService.edit(body)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
@@ -49,7 +49,7 @@ module.exports.getImportedMachineById = (req: CustomRequest, res: CustomResponse
   if (!params) {
     return;
   }
-  ImportedMachinesService.getImportedMachineById(params)
+  ImportedMachinesService.getById(params)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
@@ -62,7 +62,7 @@ module.exports.getImportedMachines = (req: CustomRequest, res: CustomResponse, n
   if (!params) {
     return;
   }
-  ImportedMachinesService.getImportedMachines(params)
+  ImportedMachinesService.getById(params)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {

@@ -16,14 +16,14 @@ export class Location {
     public machine?: Machine | null;
 
     @RelationId((location: Location) => location.machine)
-    public machineId?: Array<number>;
+    public machineId?: number;
 
     @ManyToOne(() => Contracts, (contracts: Contracts) => contracts.locations, { nullable: false })
     @JoinColumn({ name: "RefContract" })
     public contract?: Contracts | null;
 
     @RelationId((location: Location) => location.contract)
-    public refContract?: Array<number>;
+    public refContract?: number;
 
     @Column("datetimeoffset", {
         default: () => "sysdatetimeoffset()",

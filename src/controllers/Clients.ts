@@ -10,7 +10,7 @@ module.exports.getClients = (req: CustomRequest, res: CustomResponse, next: Cust
   if (!params) {
     return;
   }
-  ClientsService.getClients(params)
+  ClientsService.get(params)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {

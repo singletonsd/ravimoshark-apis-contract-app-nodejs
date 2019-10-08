@@ -29,7 +29,7 @@ const options = {
         swaggerUiPrefix: ""
     },
     loglevel: "info",
-    strict: true,
+    strict: false,
     validator: true
 };
 

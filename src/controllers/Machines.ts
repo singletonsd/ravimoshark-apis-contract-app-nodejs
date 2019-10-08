@@ -7,7 +7,7 @@ import { ResponsePayload } from "../utils/writer";
 
 module.exports.addMachine = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
   const body = Utilities.checkVariableNotNull(req.swagger.params.undefined.originalValue, res);
-  MachinesService.addMachine(body)
+  MachinesService.add(body)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
@@ -17,7 +17,7 @@ module.exports.addMachine = (req: CustomRequest, res: CustomResponse, next: Cust
 
 module.exports.deleteMachine = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
   const id = req.swagger.params.id.value;
-  MachinesService.deleteMachine(id)
+  MachinesService.delete(id)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
@@ -27,7 +27,7 @@ module.exports.deleteMachine = (req: CustomRequest, res: CustomResponse, next: C
 
 module.exports.editMachine = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
   const body = Utilities.checkVariableNotNull(req.swagger.params.undefined.originalValue, res);
-  MachinesService.editMachine(body)
+  MachinesService.edit(body)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
@@ -40,7 +40,7 @@ module.exports.getMachineById = (req: CustomRequest, res: CustomResponse, next: 
   if (!params) {
     return;
   }
-  MachinesService.getMachineById(params)
+  MachinesService.getById(params)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
@@ -53,7 +53,7 @@ module.exports.getMachines = (req: CustomRequest, res: CustomResponse, next: Cus
   if (!params) {
     return;
   }
-  MachinesService.getMachines(params)
+  MachinesService.get(params)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {

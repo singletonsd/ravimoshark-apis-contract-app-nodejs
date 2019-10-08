@@ -10,7 +10,7 @@ module.exports.getPieces = (req: CustomRequest, res: CustomResponse, next: Custo
   if (!params) {
     return;
   }
-  PiecesService.getPieces(params)
+  PiecesService.get(params)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {
