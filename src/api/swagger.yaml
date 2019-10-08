@@ -125,6 +125,7 @@ paths:
       description: Add one contract.
       operationId: addContract
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -152,6 +153,7 @@ paths:
       description: Edit one contract.
       operationId: editContract
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -273,6 +275,7 @@ paths:
       description: Add one imported Machine.
       operationId: addImportedMachine
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -300,6 +303,7 @@ paths:
       description: Edit one imported Machine.
       operationId: editImportedMachine
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -602,13 +606,15 @@ components:
           format: date
         reconduction:
           type: string
-          format: ''
+          nullable: true
         loyer:
           type: number
           format: float
+          nullable: true
         miniconso:
           type: number
           format: float
+          nullable: true
         reviewed:
           type: boolean
         valid:
