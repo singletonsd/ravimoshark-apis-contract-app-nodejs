@@ -45,28 +45,10 @@ export const VALID_RESPONSES = {
         },
         UNRECOGNIZED: "error.unrecognized",
         VALIDATION: {
-            ACCOUNT: {
-                ID: "error.validation.account.id"
-            },
-            CARRIER: {
-                ID: "error.validation.carrier.id"
-            },
-            DELIVERY: {
-                REFERENCE: "error.validation.delivery.reference",
-                VALUES: "error.validation.delivery.values"
+            CONTRACT: {
+                REF_CONTRACT: "error.validation.contract.refContract"
             },
             ID: "error.validation.id",
-            JOURNEY: {
-                DELIVERIES: "error.validation.journey.deliveries",
-                LOCATION_END: "error.validation.journey.location_end",
-                LOCATION_START: "error.validation.journey.location_start"
-            },
-            LOCATION: {
-                ID: "error.validation.location.id"
-            },
-            MEMBERSHIP: {
-                ROLE: "error.validation.membership.role"
-            },
             NAME: "error.validation.name",
             URL: "error.validation.url",
             USER: {
