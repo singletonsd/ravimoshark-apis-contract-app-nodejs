@@ -6,3 +6,4 @@ app_tokens.json
 /binaries/
 /build/
 /dist/
+generated

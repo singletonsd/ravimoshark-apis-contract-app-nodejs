@@ -1,9 +1,12 @@
 "use strict";
+import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 import express from "express";
 import * as fs from "fs";
 import jsyaml from "js-yaml";
+import swaggerTools from "oas-tools";
 import * as path from "path";
+import swaggerUi from "swagger-ui-express";
 import { LoggerUtility } from "./utils/LoggerUtility";
 
 // From TypeORM
@@ -15,9 +18,6 @@ import * as helmet from "helmet";
 
 dotenv.config();
 const app = express();
-
-// tslint:disable-next-line: no-var-requires
-const swaggerTools = require("oas-tools");
 
 // swaggerRouter configuration
 const options = {
@@ -81,9 +81,11 @@ if (fs.existsSync("./ormconfig.json")) {
     connectionFunction = createConnections(dbConf);
 }
 
+app.use(bodyParser.json());
 app.use(cors());
 app.use(helmet.xssFilter());
 app.use(helmet.frameguard());
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 connectionFunction
     .then(async (connection) => {
         swaggerTools.configure(options);
