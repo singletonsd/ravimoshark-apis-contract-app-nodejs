@@ -142,10 +142,10 @@ export class DatabaseUtilities {
       finalRelations = ["contract", "machine", "machine.piece"];
     } else if (entity === Location) {
       finalRelations = [
-        "MachineId",
-        "MachineId.RefArticle",
-        "RefContract",
-        "RefContract.RefClient"
+        "machine",
+        "machine.piece",
+        "contract",
+        "contract.client"
       ];
     } else if (entity === Machine) {
       finalRelations = ["piece", "locations"];

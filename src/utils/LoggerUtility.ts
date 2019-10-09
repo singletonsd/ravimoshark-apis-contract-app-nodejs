@@ -24,7 +24,7 @@ export class LoggerUtility {
     }
 
     public static warn(message: string, ...meta: Array<any>) {
-        LoggerUtility.log("warn", message, meta);
+        LoggerUtility.log("warn", message, ...meta);
     }
 
     public static debug(message: string, ...meta: Array<any>) {
