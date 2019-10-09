@@ -18,12 +18,16 @@ export const VALID_RESPONSES = {
                 }
             }
         },
-        EXIST: "error.exist",
+        EXIST: {
+            CONTRACT: "error.exist.contract",
+            IMPORTED_MACHINE: "error.exist.importedMachine",
+            MACHINE: "error.exist.machine"
+        },
         NOT_DELETED: "error.not_deleted",
         NOT_EXIST: {
             CONTRACT: "error.not_exist.account",
-            IMPORTED_MACHINE: "error.not_exist.delivery",
-            MACHINE: "error.not_exist.carrier"
+            IMPORTED_MACHINE: "error.not_exist.importedMachine",
+            MACHINE: "error.not_exist.machine"
         },
         PARAMS: {
             MALFORMED: {

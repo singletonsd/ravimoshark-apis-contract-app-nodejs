@@ -1,12 +1,11 @@
 import winston, { LeveledLogMethod, Logger, LoggerOptions, transports } from "winston";
 
 const LoggerUtilityFormat = winston.format.printf((info) => {
-    return `${info.timestamp} ${info.level} : ${info.message} ${info.meta ? - JSON.stringify(info.meta) : ""}`;
+    return `${info.timestamp} ${info.level} : ${info.message} ${info.meta && info.meta.length ? JSON.stringify(info.meta) : ""}`;
 });
 
 export class LoggerUtility {
 
-    // TODO: configure format of logger.
     // TODO: configure a tool to see logger like logstash.
     public static getInstance() {
         if (!this.instance) {
@@ -17,11 +16,11 @@ export class LoggerUtility {
     }
 
     public static info(message: string, ...meta: Array<any>) {
-        LoggerUtility.log("info", message, meta);
+        LoggerUtility.log("info", message, ...meta);
     }
 
     public static error(message: string, ...meta: Array<any>) {
-        LoggerUtility.log("error", message, meta);
+        LoggerUtility.log("error", message, ...meta);
     }
 
     public static warn(message: string, ...meta: Array<any>) {
@@ -29,12 +28,12 @@ export class LoggerUtility {
     }
 
     public static debug(message: string, ...meta: Array<any>) {
-        LoggerUtility.log("debug", message, meta);
+        LoggerUtility.log("debug", message, ...meta);
     }
 
     public static log(level: string, message: string, ...meta: Array<any>) {
         LoggerUtility.getInstance();
-        this.logger.log(level.toString(), message, meta);
+        this.logger.log(level.toString(), message, { meta });
     }
 
     private static readonly options: LoggerOptions = {
