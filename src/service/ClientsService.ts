@@ -26,23 +26,24 @@ export class ClientsService {
     params: ParametersComplete
   ) {
     const FUNCTION_NAME = "get";
+    const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
     return new Promise(async (resolve, reject) => {
-      LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
+      LoggerUtility.info(`${logHeader}`);
       const object = DatabaseUtilities.getFindObject(params, ClientsDB);
       if (!object) {
-          LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME, "order param malformed", params.orderBy);
+          LoggerUtility.warn(`${logHeader} order param malformed`, params.orderBy);
           reject(VALID_RESPONSES.ERROR.PARAMS.MALFORMED.ORDERBY);
           return;
       }
-      LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "with", object);
-      const [accounts, total] = await getConnection().manager.findAndCount(ClientsDB, object);
-      if (!accounts || !accounts.length) {
-          LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME, "empty result");
+      LoggerUtility.info(`${logHeader} with`, object);
+      const [items, total] = await getConnection().manager.findAndCount(ClientsDB, object);
+      if (!items || !items.length) {
+          LoggerUtility.warn(`${logHeader} empty result`);
           resolve();
           return;
       }
-      LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "got ", accounts.length);
-      resolve(Utilities.getMetadataFormat(accounts, total, params));
+      LoggerUtility.info(`${logHeader} got ${items.length}`);
+      resolve(Utilities.getMetadataFormat(items, total, params));
       return;
   });
   }

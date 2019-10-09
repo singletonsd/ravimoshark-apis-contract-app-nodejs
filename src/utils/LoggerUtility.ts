@@ -1,5 +1,9 @@
 import winston, { LeveledLogMethod, Logger, LoggerOptions, transports } from "winston";
 
+const LoggerUtilityFormat = winston.format.printf((info) => {
+    return `${info.timestamp} ${info.level} : ${info.message} ${info.meta ? - JSON.stringify(info.meta) : ""}`;
+});
+
 export class LoggerUtility {
 
     // TODO: configure format of logger.
@@ -34,6 +38,12 @@ export class LoggerUtility {
     }
 
     private static readonly options: LoggerOptions = {
+        format: winston.format.combine(
+            winston.format.timestamp()
+            , winston.format.label({ label: "API CONTRACTS" })
+            , winston.format.splat()
+            , winston.format.colorize()
+            , LoggerUtilityFormat ),
         transports: [ new transports.Console({
             debugStdout: true,
             level: "debug" }) ]
@@ -43,6 +53,6 @@ export class LoggerUtility {
     private static logger: Logger;
 
     private constructor() {
-
     }
+
 }

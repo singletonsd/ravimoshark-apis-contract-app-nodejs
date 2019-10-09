@@ -21,26 +21,25 @@ export class PiecesService {
    * metadata Boolean If metadata is needed (for pagination controls) (optional)
    * returns inline_response_200
    */
-  public static get(
-    params: ParametersComplete
-  ) {
+  public static get(params: ParametersComplete) {
     const FUNCTION_NAME = "get";
+    const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
     return new Promise(async (resolve, reject) => {
-      LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
+      LoggerUtility.info(`${logHeader}`);
       const object = DatabaseUtilities.getFindObject(params, PiecesDB);
       if (!object) {
-          LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME, "order param malformed", params.orderBy);
+          LoggerUtility.warn(`${logHeader} order param malformed`, params.orderBy);
           reject(VALID_RESPONSES.ERROR.PARAMS.MALFORMED.ORDERBY);
           return;
       }
-      LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "with", object);
+      LoggerUtility.info(`${logHeader} with`, object);
       const [accounts, total] = await getConnection().manager.findAndCount(PiecesDB, object);
       if (!accounts || !accounts.length) {
           LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME, "empty result");
           resolve();
           return;
       }
-      LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "got ", accounts.length);
+      LoggerUtility.info(`${logHeader} got ${accounts.length}`);
       resolve(Utilities.getMetadataFormat(accounts, total, params));
       return;
   });

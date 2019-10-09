@@ -1,7 +1,5 @@
-import { Reviewed } from "src/models/reviewed";
-import { Valid } from "src/models/valid";
 import { BaseEntity, FindManyOptions, FindOneOptions, ObjectType } from "typeorm";
-import { Deleted } from "../../models";
+import { Deleted, Reviewed, Valid } from "../../models";
 import { LoggerUtility } from "../../utils/LoggerUtility";
 import { ParametersComplete } from "../../utils/utilities";
 import {
@@ -103,9 +101,9 @@ export class DatabaseUtilities {
     if (!params) {
       params = {};
     }
-    if (valid === "INVALID") {
+    if (valid === Valid.INVALID) {
       params.valid = false;
-    } else if ( valid === "VALID") {
+    } else if ( valid === Valid.VALID) {
       params.valid = true;
     }
     return params;
@@ -115,9 +113,9 @@ export class DatabaseUtilities {
     if (!params) {
       params = {};
     }
-    if (reviewed === "NOT_REVIEWED") {
+    if (reviewed === Reviewed.UNREVIEWED) {
       params.reviewed = false;
-    } else if ( reviewed === "REVIEWED") {
+    } else if ( reviewed === Reviewed.REVIEWED) {
       params.reviewed = true;
     }
     return params;

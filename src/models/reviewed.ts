@@ -11,8 +11,8 @@
 
 export type Reviewed = "REVIEWED" | "NOT_REVIEWED" | "ALL";
 
-export const Deleted = {
+export const Reviewed = {
     ALL: "ALL" as Reviewed,
-    DELETED: "DELETED" as Reviewed,
-    REVIEWED: "REVIEWED" as Reviewed
+    REVIEWED: "REVIEWED" as Reviewed,
+    UNREVIEWED: "UNREVIEWED" as Reviewed
 };

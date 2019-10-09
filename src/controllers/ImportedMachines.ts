@@ -62,7 +62,7 @@ module.exports.getImportedMachines = (req: CustomRequest, res: CustomResponse, n
   if (!params) {
     return;
   }
-  ImportedMachinesService.getById(params)
+  ImportedMachinesService.get(params)
     .then((response: any) => {
       ResponsePayload.response(res, response);
     }).catch((response: any) => {

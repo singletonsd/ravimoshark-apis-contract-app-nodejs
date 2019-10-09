@@ -11,7 +11,7 @@
 
 export type Valid = "VALID" | "INVALID" | "ALL";
 
-export const Deleted = {
+export const Valid = {
     ALL: "ALL" as Valid,
     INVALID: "INVALID" as Valid,
     VALID: "VALID" as Valid
