@@ -3,17 +3,39 @@
 import { getConnection } from "typeorm";
 import { Location } from "../databases/entities";
 import { DatabaseUtilities } from "../databases/utils/DatabaseUtils";
-import { Metadata } from "../models";
+import { Deleted, Metadata } from "../models";
 import { LoggerUtility } from "../utils/LoggerUtility";
 import { ParametersComplete, ParametersIdDeleted, Utilities } from "../utils/utilities";
 import { VALID_RESPONSES } from "../utils/ValidResponses";
 import { ContractsService } from "./ContractsService";
-import { Deleted } from "src/models/reviewed";
+import { MachinesService } from "./MachinesService";
 
 const SERVICE_NAME = "LocationsService";
 
 export class LocationsService {
-    // tslint:disable:object-literal-sort-keys
+
+    /**
+     *  Check if a location exits.
+     * @param id
+     */
+    public static exists(id: number): Promise<boolean> {
+        const FUNCTION_NAME = "exists";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
+        return new Promise<boolean>(async (resolve, reject) => {
+            const previous = await getConnection().manager.findOne(Location, {
+                select: [ "id" ],
+                where: { id }
+            });
+            if (!previous) {
+                LoggerUtility.warn(`${logHeader} ${VALID_RESPONSES.ERROR.NOT_EXIST.CONTRACT} ${id}`);
+                resolve(false);
+                return;
+            }
+            resolve(true);
+            return;
+        });
+    }
+
     /**
      * Add one machine.
      * Add one machine.
@@ -23,25 +45,25 @@ export class LocationsService {
      */
     public static add(item: Location): Promise<Location> {
         const FUNCTION_NAME = "add";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise<Location>(async (resolve, reject) => {
-            LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, item.id);
-            LoggerUtility.debug(SERVICE_NAME, FUNCTION_NAME, item);
-            if (!ContractsService.exists(item.refContract || item.contract.refContract)) {
+            LoggerUtility.info(`${logHeader}`);
+            LoggerUtility.debug(`${logHeader}`, item);
+            if (! await ContractsService.exists(item.refContract || item.contract.refContract)) {
                 reject(VALID_RESPONSES.ERROR.NOT_EXIST.CONTRACT);
                 return;
             }
-            const editedItem = await getConnection().manager.save(Location, item);
-            LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME,
-                "edited", editedItem.id
-            );
-            if (editedItem.machine) {
-                // if (editedItem.machine.id) {
-                //     await MachinesService.edit(editedItem.machine);
-                // } else {
-                //     await LocationsService.add({ contract: item.contract, machine: editedItem.machine});
-                // }
+            const machineId = item.machine ? item.machine.id : item.machineId;
+            if (!machineId) {
+                item.machine = await MachinesService.add(item.machine);
+            } else if (! await MachinesService.exists(machineId)) {
+                reject(VALID_RESPONSES.ERROR.NOT_EXIST.MACHINE);
+                return;
             }
-            // resolve(this.getById({ id: editedItem.id, deleted: Deleted.ALL }));
+            const newItem = await getConnection().manager.save(Location, item);
+            LoggerUtility.info(`${logHeader} success ${newItem.id}`);
+            LoggerUtility.debug(`${logHeader}`, newItem);
+            resolve(this.getById({ id: newItem.id, deleted: Deleted.ALL }));
             return;
         });
     }
@@ -54,6 +76,8 @@ export class LocationsService {
      * no response value expected for this operation
      */
     public static delete(id) {
+        const FUNCTION_NAME = "delete";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise((resolve, reject) => {
         resolve();
         });
@@ -67,19 +91,28 @@ export class LocationsService {
      * returns Machines
      */
     public static edit(item: Location): Promise<Location> {
-        return new Promise<Location>((resolve, reject) => {
-        const examples = {};
-        examples["application/json"] = {
-            refContract: "refContract",
-            piece: "piece",
-            id: 7,
-            numSerie: "numSerie"
-        };
-        if (Object.keys(examples).length > 0) {
-            resolve(examples[Object.keys(examples)[0]]);
-        } else {
-            resolve();
-        }
+        const FUNCTION_NAME = "edit";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
+        return new Promise<Location>(async (resolve, reject) => {
+            LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, item.id);
+            LoggerUtility.debug(SERVICE_NAME, FUNCTION_NAME, item);
+            if (!ContractsService.exists(item.refContract || item.contract.refContract)) {
+                reject(VALID_RESPONSES.ERROR.NOT_EXIST.CONTRACT);
+                return;
+            }
+            const machineId = item.machine ? item.machine.id : item.machineId;
+            if (machineId && !MachinesService.exists(machineId)) {
+                reject(VALID_RESPONSES.ERROR.NOT_EXIST.MACHINE);
+                return;
+            }
+            if (!MachinesService.existsSerialNumber(item.machine.serialNumber)) {
+                reject(VALID_RESPONSES.ERROR.EXIST.MACHINE);
+                return;
+            }
+            const editedItem = await getConnection().manager.save(Location, item);
+            LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "success", editedItem.id);
+            resolve(this.getById({ id: editedItem.id, deleted: Deleted.ALL }));
+            return;
         });
     }
 
@@ -93,19 +126,19 @@ export class LocationsService {
      */
     public static getById(params: ParametersIdDeleted): Promise<Location> {
         const FUNCTION_NAME = "getById";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise<Location>(async (resolve, reject) => {
-        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
-        const prevAccount: Location = await getConnection().manager
+        LoggerUtility.info(`${logHeader}`);
+        const previous: Location = await getConnection().manager
             .findOne(Location
             , DatabaseUtilities.getFindOneObject(params.id, params.deleted, Location));
-        if (!prevAccount) {
-            LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME
-                , "not exists with id", params.id, "and deleted", params.deleted.toString());
+        if (!previous) {
+            LoggerUtility.warn(`${logHeader} not exists with id=${params.id} and deleted=${params.deleted.toString()}`);
             reject(VALID_RESPONSES.ERROR.NOT_EXIST.MACHINE);
             return;
         }
-        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "got", prevAccount.id);
-        resolve(prevAccount);
+        LoggerUtility.info(`${logHeader} got ${previous.id}`);
+        resolve(previous);
         return;
     });
     }
@@ -124,27 +157,24 @@ export class LocationsService {
      */
     public static get(params: ParametersComplete): Promise<{metadata: Metadata, items: Array<Location>}> {
         const FUNCTION_NAME = "get";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise<{metadata: Metadata, items: Array<Location>}> (async (resolve, reject) => {
-        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
+        LoggerUtility.info(`${logHeader}`);
         const object = DatabaseUtilities.getFindObject(params, Location);
         if (!object) {
-            LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME, "order param malformed", params.orderBy);
+            LoggerUtility.warn(`${logHeader} order param malformed ${params.orderBy}`);
             reject(VALID_RESPONSES.ERROR.PARAMS.MALFORMED.ORDERBY);
             return;
         }
-        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "with", object);
-        const [accounts, total] = await getConnection().manager.findAndCount(Location, object);
-        if (!accounts || !accounts.length) {
-            LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME, "empty result");
+        LoggerUtility.info(`${logHeader} with`, object);
+        const [items, total] = await getConnection().manager.findAndCount(Location, object);
+        if (!items || !items.length) {
+            LoggerUtility.warn(`${logHeader} empty result`);
             resolve();
             return;
         }
-        const apiAccounts = accounts;
-        // for (const us of accounts) {
-        //     apiAccounts.push(new Accounts(null, us));
-        // }
-        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "got ", apiAccounts.length);
-        resolve(Utilities.getMetadataFormat(apiAccounts, total, params));
+        LoggerUtility.info(`${logHeader} got ${items.length}`);
+        resolve(Utilities.getMetadataFormat(items, total, params));
         return;
     });
     }

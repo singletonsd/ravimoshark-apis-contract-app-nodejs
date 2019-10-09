@@ -1,7 +1,7 @@
 "use strict";
 
 import { getConnection } from "typeorm";
-import { ImportedMachines } from "../databases/entities";
+import { ImportedMachines, Machine } from "../databases/entities";
 import { DatabaseUtilities } from "../databases/utils/DatabaseUtils";
 import { Deleted, Metadata } from "../models";
 import { LoggerUtility } from "../utils/LoggerUtility";
@@ -21,14 +21,14 @@ export class ImportedMachinesService {
      */
     public static exists(id: number): Promise<boolean> {
         const FUNCTION_NAME = "exists";
-        return new Promise<boolean>(async (resolve, reject) => {
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
+        return new Promise<boolean>(async (resolve) => {
             const previous = await getConnection().manager.findOne(ImportedMachines, {
                 where: { id },
                 select: [ "id" ]
             });
             if (!previous) {
-                LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME,
-                VALID_RESPONSES.ERROR.NOT_EXIST.CONTRACT, id);
+                LoggerUtility.warn(`${logHeader} ${VALID_RESPONSES.ERROR.NOT_EXIST.CONTRACT} ${id}`);
                 resolve(false);
                 return;
             }
@@ -46,13 +46,12 @@ export class ImportedMachinesService {
      */
     public static add(item: ImportedMachines): Promise<ImportedMachines> {
         const FUNCTION_NAME = "add";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise<ImportedMachines>(async (resolve, reject) => {
-            LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, item.id);
-            LoggerUtility.debug(SERVICE_NAME, FUNCTION_NAME, item);
+            LoggerUtility.info(`${logHeader} ${item.id}`);
+            LoggerUtility.debug(`${logHeader}`, item);
             const editedItem = await getConnection().manager.save(ImportedMachines, item);
-            LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME,
-                "edited", editedItem.id
-            );
+            LoggerUtility.info(`${logHeader} success ${editedItem.id}`);
             if (editedItem.machine) {
                 if (editedItem.machine.id) {
                     await MachinesService.edit(editedItem.machine);
@@ -73,6 +72,8 @@ export class ImportedMachinesService {
      * no response value expected for this operation
      */
     public static delete(id) {
+        const FUNCTION_NAME = "delete";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise((resolve, reject) => {
             resolve();
         });
@@ -87,39 +88,34 @@ export class ImportedMachinesService {
      */
     public static edit(item: ImportedMachines): Promise<ImportedMachines> {
         const FUNCTION_NAME = "edit";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise<ImportedMachines>(async (resolve, reject) => {
-            LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, item.id);
-            LoggerUtility.debug(SERVICE_NAME, FUNCTION_NAME, item);
+            LoggerUtility.info(`${logHeader} ${item.id}`);
+            LoggerUtility.debug(`${logHeader}`, item);
             if (!item.id) {
-                LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME,
-                "id not valid", VALID_RESPONSES.ERROR.VALIDATION.ID,
-                item.refContract);
+                LoggerUtility.warn(`${logHeader} id not valid" ${VALID_RESPONSES.ERROR.VALIDATION.ID} ${item.refContract}`);
                 reject(VALID_RESPONSES.ERROR.VALIDATION.ID);
                 return;
             }
-            const previous = await getConnection().manager.findOne(ImportedMachines, {
-                where: { id: item.id },
-                select: ["id"]
-            });
-            if (!previous) {
-                LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME,
-                VALID_RESPONSES.ERROR.NOT_EXIST.IMPORTED_MACHINE,
-                item.id);
+            if (! await this.exists(item.id)) {
+                LoggerUtility.warn(`${logHeader} ${VALID_RESPONSES.ERROR.NOT_EXIST.IMPORTED_MACHINE} ${item.id}`);
                 reject(VALID_RESPONSES.ERROR.NOT_EXIST.IMPORTED_MACHINE);
                 return;
             }
-            const editedItem = await getConnection().manager.save(ImportedMachines, item);
-            LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME,
-                "edited", editedItem.id
-            );
-            if (editedItem.machine) {
-                if (editedItem.machine.id) {
-                    await MachinesService.edit(editedItem.machine);
-                } else {
-                    await LocationsService.add({ contract: item.contract, machine: editedItem.machine});
+            const machine = item.machine;
+            delete item.machine;
+            delete item.machineId;
+            if (machine) {
+                if (!machine.id) {
+                    LoggerUtility.info(`${logHeader} machine not registered trying to register`);
+                    item.machine = (await LocationsService.add({ contract: item.contract, machine })).machine;
+                    LoggerUtility.info(`${logHeader} machine added`);
+                    LoggerUtility.debug(`${logHeader}`, item.machine);
                 }
             }
-            resolve(this.getById({ id: editedItem.id, deleted: Deleted.ALL }));
+            const editedItem = await getConnection().manager.save(ImportedMachines, item);
+            LoggerUtility.info(`${logHeader} success ${editedItem.id}`);
+            resolve(await this.getById({ id: editedItem.id, deleted: Deleted.ALL }));
             return;
         });
     }
@@ -134,35 +130,19 @@ export class ImportedMachinesService {
      */
     public static getById(params: ParametersIdDeleted): Promise<ImportedMachines> {
         const FUNCTION_NAME = "getById";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise<ImportedMachines>(async (resolve, reject) => {
-        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
-        const prevAccount: ImportedMachines = await getConnection().manager.findOne(
+        LoggerUtility.info(`${logHeader}`);
+        const previous: ImportedMachines = await getConnection().manager.findOne(
             ImportedMachines,
-            DatabaseUtilities.getFindOneObject(
-            params.id,
-            params.deleted,
-            ImportedMachines
-            )
-        );
-        if (!prevAccount) {
-            LoggerUtility.warn(
-            SERVICE_NAME,
-            FUNCTION_NAME,
-            "not exists with id",
-            params.id,
-            "and deleted",
-            params.deleted.toString()
-            );
+            DatabaseUtilities.getFindOneObject(params.id, params.deleted, ImportedMachines));
+        if (!previous) {
+            LoggerUtility.warn(`${logHeader} not exists with id ${params.id} and deleted ${params.deleted.toString()}`);
             reject(VALID_RESPONSES.ERROR.NOT_EXIST.IMPORTED_MACHINE);
             return;
         }
-        LoggerUtility.info(
-            SERVICE_NAME,
-            FUNCTION_NAME,
-            "got",
-            prevAccount.refContract
-        );
-        resolve(prevAccount);
+        LoggerUtility.info(`${logHeader} got ${previous.refContract}`);
+        resolve(previous);
         return;
         });
     }
@@ -179,34 +159,30 @@ export class ImportedMachinesService {
    * metadata Boolean If metadata is needed (for pagination controls) (optional)
    * returns inline_response_200_1
    */
-  public static get(params: ParametersComplete): Promise<{metadata: Metadata, items: Array<ImportedMachines>}> {
-    const FUNCTION_NAME = "get";
-    return new Promise<{metadata: Metadata, items: Array<ImportedMachines>}> (async (resolve, reject) => {
-      LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
-      const object = DatabaseUtilities.getFindObject(params, ImportedMachines);
-      if (!object) {
-        LoggerUtility.warn(
-          SERVICE_NAME,
-          FUNCTION_NAME,
-          "order param malformed",
-          params.orderBy
+    public static get(params: ParametersComplete): Promise<{metadata: Metadata, items: Array<ImportedMachines>}> {
+        const FUNCTION_NAME = "get";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
+        return new Promise<{metadata: Metadata, items: Array<ImportedMachines>}> (async (resolve, reject) => {
+        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
+        const object = DatabaseUtilities.getFindObject(params, ImportedMachines);
+        if (!object) {
+            LoggerUtility.warn(`${logHeader} order param malformed ${params.orderBy}`);
+            reject(VALID_RESPONSES.ERROR.PARAMS.MALFORMED.ORDERBY);
+            return;
+        }
+        LoggerUtility.info(`${logHeader} with`, object);
+        const [items, total] = await getConnection().manager.findAndCount(
+            ImportedMachines,
+            object
         );
-        reject(VALID_RESPONSES.ERROR.PARAMS.MALFORMED.ORDERBY);
+        if (!items || !items.length) {
+            LoggerUtility.warn(`${logHeader} empty result`);
+            resolve();
+            return;
+        }
+        LoggerUtility.info(`${logHeader} got ${items.length}`);
+        resolve(Utilities.getMetadataFormat(items, total, params));
         return;
-      }
-      LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "with", object);
-      const [accounts, total] = await getConnection().manager.findAndCount(
-        ImportedMachines,
-        object
-      );
-      if (!accounts || !accounts.length) {
-        LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME, "empty result");
-        resolve();
-        return;
-      }
-      LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "got ", accounts.length);
-      resolve(Utilities.getMetadataFormat(accounts, total, params));
-      return;
-    });
+        });
   }
 }

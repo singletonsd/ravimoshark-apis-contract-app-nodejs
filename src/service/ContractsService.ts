@@ -5,17 +5,13 @@ import { Contracts } from "../databases/entities";
 import { DatabaseUtilities } from "../databases/utils/DatabaseUtils";
 import { Deleted, Metadata, RefContract } from "../models";
 import { LoggerUtility } from "../utils/LoggerUtility";
-import {
-  ParametersComplete,
-  ParametersIdDeleted,
-  Utilities
-} from "../utils/utilities";
+import { ParametersComplete, ParametersIdDeleted, Utilities } from "../utils/utilities";
 import { VALID_RESPONSES } from "../utils/ValidResponses";
 import { ImportedMachinesService } from "./ImportedMachinesService";
 import { LocationsService } from "./LocationsService";
 
 const SERVICE_NAME = "ContractsService";
-// tslint:disable:object-literal-sort-keys
+
 export class ContractsService {
 
     /**
@@ -24,14 +20,12 @@ export class ContractsService {
      */
     public static exists(refContract: number): Promise<boolean> {
         const FUNCTION_NAME = "exists";
-        return new Promise<boolean>(async (resolve, reject) => {
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
+        return new Promise<boolean>(async (resolve) => {
             const previous = await getConnection().manager.findOne(Contracts, {
-                where: { refContract },
-                select: ["refContract"]
-            });
+                select: ["refContract"], where: { refContract }});
             if (!previous) {
-                LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME,
-                VALID_RESPONSES.ERROR.NOT_EXIST.CONTRACT, refContract);
+                LoggerUtility.warn(`${logHeader} ${VALID_RESPONSES.ERROR.NOT_EXIST.CONTRACT} ${refContract}`);
                 resolve(false);
                 return;
             }
@@ -48,33 +42,36 @@ export class ContractsService {
      * returns Contracts
      */
     public static add(item: Contracts): Promise<Contracts> {
+        // TODO: contracts add.
+        const FUNCTION_NAME = "add";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise<Contracts>((resolve, reject) => {
         const examples = {};
         examples["application/json"] = {
-            valid: true,
-            refContract: 2,
-            identification: "identification",
-            dateDebut: "2000-01-23",
-            loyer: 9.301444,
-            miniconso: 3.6160767,
-            client: "client",
-            reviewed: true,
-            machines: [
-            {
-                refContract: "refContract",
-                piece: "piece",
-                id: 7,
-                numSerie: "numSerie"
-            },
-            {
-                refContract: "refContract",
-                piece: "piece",
-                id: 7,
-                numSerie: "numSerie"
-            }
-            ],
-            dateFin: "2000-01-23",
-            reconduction: "reconduction"
+            // valid: true,
+            // refContract: 2,
+            // identification: "identification",
+            // dateDebut: "2000-01-23",
+            // loyer: 9.301444,
+            // miniconso: 3.6160767,
+            // client: "client",
+            // reviewed: true,
+            // machines: [
+            // {
+            //     refContract: "refContract",
+            //     piece: "piece",
+            //     id: 7,
+            //     numSerie: "numSerie"
+            // },
+            // {
+            //     refContract: "refContract",
+            //     piece: "piece",
+            //     id: 7,
+            //     numSerie: "numSerie"
+            // }
+            // ],
+            // dateFin: "2000-01-23",
+            // reconduction: "reconduction"
         };
         if (Object.keys(examples).length > 0) {
             resolve(examples[Object.keys(examples)[0]]);
@@ -92,6 +89,9 @@ export class ContractsService {
      * no response value expected for this operation
      */
     public static delete(refContract: RefContract) {
+        // TODO: contracts delete.
+        const FUNCTION_NAME = "delete";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise((resolve, reject) => {
         resolve();
         });
@@ -106,38 +106,41 @@ export class ContractsService {
    */
     public static edit(contract: Contracts): Promise<Contracts> {
         const FUNCTION_NAME = "edit";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise<Contracts>(async (resolve, reject) => {
-            LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, contract.refContract);
-            LoggerUtility.debug(SERVICE_NAME, FUNCTION_NAME, contract);
+            LoggerUtility.info(`${logHeader} ${contract.refContract}`);
+            LoggerUtility.debug(`${logHeader}`, contract);
             if (!contract.refContract) {
-                LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME,
-                "id not valid", VALID_RESPONSES.ERROR.VALIDATION.ID,
-                contract.refContract);
+                LoggerUtility.warn(`${logHeader} id not valid ${VALID_RESPONSES.ERROR.VALIDATION.ID} ${contract.refContract}`);
                 reject(VALID_RESPONSES.ERROR.VALIDATION.ID);
                 return;
             }
-            if (!this.exists(contract.refContract)) {
+            if (!await this.exists(contract.refContract)) {
                 reject(VALID_RESPONSES.ERROR.NOT_EXIST.CONTRACT);
                 return;
             }
+            const importedMachines = contract.importedMachines;
+            delete contract.importedMachines;
+            const locations = contract.locations;
+            delete contract.locations;
             const editedContract = await getConnection().manager.save(Contracts, contract);
-            LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME,
-                "edited", editedContract.refContract
-            );
-            contract.importedMachines.forEach(async (imported) => {
+            LoggerUtility.info(`${logHeader} success ${editedContract.refContract}`);
+            await Promise.all(importedMachines.map(async (imported) => {
                 if (imported.id) {
                     await ImportedMachinesService.edit(imported);
                 } else {
                     await ImportedMachinesService.add(imported);
                 }
-            });
-            contract.locations.forEach(async (location) => {
+            }));
+            LoggerUtility.info(`${logHeader} finished imported ${editedContract.refContract}`);
+            await Promise.all(locations.map(async (location) => {
                 if (!location.id) {
                     await LocationsService.add(location);
                 } else {
                     await LocationsService.edit(location);
                 }
-            });
+            }));
+            LoggerUtility.info(`${logHeader} finished locations ${editedContract.refContract}`);
             resolve(await this.getById({ id: editedContract.refContract, deleted: Deleted.ALL }));
             return;
         });
@@ -153,34 +156,17 @@ export class ContractsService {
      */
     public static getById(params: ParametersIdDeleted): Promise<Contracts> {
         const FUNCTION_NAME = "getById";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise<Contracts>(async (resolve, reject) => {
         LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
-        const previous: Contracts = await getConnection().manager.findOne(
-            Contracts,
-            DatabaseUtilities.getFindOneObject(
-            params.id,
-            params.deleted,
-            Contracts
-            )
-        );
+        const previous: Contracts = await getConnection().manager.findOne(Contracts,
+            DatabaseUtilities.getFindOneObject(params.id, params.deleted, Contracts));
         if (!previous) {
-            LoggerUtility.warn(
-            SERVICE_NAME,
-            FUNCTION_NAME,
-            "not exists with id",
-            params.id,
-            "and deleted",
-            params.deleted.toString()
-            );
+            LoggerUtility.warn(`${logHeader} not exists with id=${params.id} and deleted=${params.deleted.toString()}`);
             reject(VALID_RESPONSES.ERROR.NOT_EXIST.CONTRACT);
             return;
         }
-        LoggerUtility.info(
-            SERVICE_NAME,
-            FUNCTION_NAME,
-            "got",
-            previous.refContract
-        );
+        LoggerUtility.info(`${logHeader} got ${previous.refContract}`);
         resolve(previous);
         return;
         });
@@ -200,31 +186,27 @@ export class ContractsService {
      */
     public static get(params: ParametersComplete): Promise<{metadata: Metadata, items: Array<Contracts>}> {
         const FUNCTION_NAME = "get";
+        const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise<{metadata: Metadata, items: Array<Contracts>}>(async (resolve, reject) => {
         LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
         const object = DatabaseUtilities.getFindObject(params, Contracts);
         if (!object) {
-            LoggerUtility.warn(
-            SERVICE_NAME,
-            FUNCTION_NAME,
-            "order param malformed",
-            params.orderBy
-            );
+            LoggerUtility.warn(`${logHeader} order param malformed ${params.orderBy}`);
             reject(VALID_RESPONSES.ERROR.PARAMS.MALFORMED.ORDERBY);
             return;
         }
-        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "with", object);
-        const [accounts, total] = await getConnection().manager.findAndCount(
+        LoggerUtility.info(`${logHeader} with`, object);
+        const [items, total] = await getConnection().manager.findAndCount(
             Contracts,
             object
         );
-        if (!accounts || !accounts.length) {
-            LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME, "empty result");
+        if (!items || !items.length) {
+            LoggerUtility.warn(`${logHeader} empty result`);
             resolve();
             return;
         }
-        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME, "got ", accounts.length);
-        resolve(Utilities.getMetadataFormat(accounts, total, params));
+        LoggerUtility.info(`${logHeader} got ${items.length}`);
+        resolve(Utilities.getMetadataFormat(items, total, params));
         return;
         });
     }
