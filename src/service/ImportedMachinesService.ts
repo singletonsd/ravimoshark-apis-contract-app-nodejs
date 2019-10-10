@@ -105,7 +105,7 @@ export class ImportedMachinesService {
             const machine = item.machine;
             delete item.machine;
             delete item.machineId;
-            if (machine) {
+            if (machine && ((machine.piece && machine.piece.refArticle) ||  machine.refArticle)) {
                 if (!machine.id) {
                     LoggerUtility.info(`${logHeader} machine not registered trying to register`);
                     item.machine = (await LocationsService.add({ contract: item.contract, machine })).machine;
