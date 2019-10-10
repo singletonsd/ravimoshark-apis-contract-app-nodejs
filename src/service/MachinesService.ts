@@ -74,9 +74,12 @@ export class MachinesService {
                 reject(VALID_RESPONSES.ERROR.NOT_EXIST.PIECE);
                 return;
             }
-            if (await MachinesService.existsSerialNumber(item.serialNumber)) {
+            if (item.serialNumber && await MachinesService.existsSerialNumber(item.serialNumber)) {
                 reject(VALID_RESPONSES.ERROR.EXIST.MACHINE);
                 return;
+            }
+            if (item.serialNumber === "") {
+                item.serialNumber = undefined;
             }
             const newItem = await getConnection().manager.save(Machine, item);
             LoggerUtility.info(`${logHeader} success ${newItem.id}`);
