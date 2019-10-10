@@ -89,6 +89,7 @@ paths:
         - $ref: '#/components/parameters/Metadata'
         - $ref: '#/components/parameters/Valid'
         - $ref: '#/components/parameters/Reviewed'
+        - $ref: '#/components/parameters/RefClientQuery'
       responses:
         '200':
           description: Request OK.
@@ -863,6 +864,13 @@ components:
     OrderBy:
       name: orderBy
       description: order by property.
+      in: query
+      required: false
+      schema:
+        type: string
+    RefClientQuery:
+      name: refClient
+      description: Data from a desired contract
       in: query
       required: false
       schema:

@@ -40,12 +40,9 @@ export class DatabaseUtilities {
     let whereObject: { idUser?: number } = {};
     if (params.filter) {
       try {
-        whereObject = JSON.parse(params.orderBy);
+        whereObject = JSON.parse(params.filter);
       } catch (e) {
-        LoggerUtility.warn(
-          "orderBy parameter provided is not in JSON format.",
-          params.orderBy
-        );
+        LoggerUtility.warn("orderBy parameter provided is not in JSON format.", params.orderBy);
       }
     }
     if (idUser) {
@@ -61,6 +58,9 @@ export class DatabaseUtilities {
     }
     if (params.valid) {
       this.addValidParam(params.valid, object.where);
+    }
+    if (params.refClient) {
+      this.addParam("client", params.refClient.toLocaleUpperCase(), object.where);
     }
     if (params.orderBy) {
       let order: object;
@@ -105,6 +105,16 @@ export class DatabaseUtilities {
       params.valid = false;
     } else if ( valid === Valid.VALID) {
       params.valid = true;
+    }
+    return params;
+  }
+
+  public static addParam(parameter: string, value: string, params: any): object {
+    if (!params) {
+      params = {};
+    }
+    if (value) {
+      params[parameter] = value;
     }
     return params;
   }

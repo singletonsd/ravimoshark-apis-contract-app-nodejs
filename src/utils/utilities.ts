@@ -55,8 +55,7 @@ export class Utilities {
             parameters: SwaggerRequestParameters, idName?: string, res?: CustomResponse): ParametersIdDeleted | null {
         const response: ParametersIdDeleted = {
             deleted: this.checkDeleted(parameters),
-            id: this.checkVariableNotNull(parameters, undefined, idName),
-            idUser: this.checkVariableNotNull(parameters, undefined, "idUser")
+            id: this.checkVariableNotNull(parameters, undefined, idName)
         };
         if (!response.deleted || (response.id !== 0 && !response.id)) {
             return null;
@@ -79,6 +78,7 @@ export class Utilities {
             limit: this.checkVariableNotNull(parameters, undefined, "limit"),
             metadata: this.checkVariableNotNull(parameters, undefined, "metadata"),
             orderBy: this.checkVariableNotNull(parameters, undefined, "orderBy"),
+            refClient: this.checkVariableNotNull(parameters, undefined, "refClient"),
             reviewed: this.checkVariableNotNull(parameters, undefined, "reviewed"),
             skip: this.checkVariableNotNull(parameters, undefined, "skip"),
             valid: this.checkVariableNotNull(parameters, undefined, "valid")
@@ -145,7 +145,6 @@ export class Utilities {
 export interface ParametersIdDeleted {
     id: number | null;
     deleted: Deleted | null;
-    idUser?: number | null;
 }
 
 export interface ParametersComplete extends ParametersIdDeleted {
@@ -156,4 +155,5 @@ export interface ParametersComplete extends ParametersIdDeleted {
     metadata: boolean | null;
     valid?: Valid | null;
     reviewed?: Reviewed | null;
+    refClient?: string | null;
 }
