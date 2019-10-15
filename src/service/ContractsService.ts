@@ -88,7 +88,7 @@ export class ContractsService {
      * refContract Long id to delete or search
      * no response value expected for this operation
      */
-    public static delete(refContract: RefContract) {
+    public static delete(refContract: ParametersIdDeleted) {
         // TODO: contracts delete.
         const FUNCTION_NAME = "delete";
         const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;

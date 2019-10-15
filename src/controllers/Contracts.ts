@@ -20,7 +20,7 @@ module.exports.addContract = (req: CustomRequest, res: CustomResponse, next: Cus
 };
 
 module.exports.deleteContract = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const refContract = Utilities.checkVariableNotNull(req.swagger.params, res, "refContract");
+  const refContract = Utilities.checkAndDelete(req.swagger.params, "refContract", res);
   if (!refContract) {
     return;
   }

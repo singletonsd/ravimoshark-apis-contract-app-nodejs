@@ -19,7 +19,7 @@ module.exports.addImportedMachine = (req: CustomRequest, res: CustomResponse, ne
 };
 
 module.exports.deleteImportedMachine = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const id = Utilities.checkVariableNotNull(req.swagger.params, res, "id");
+  const id = Utilities.checkIdAndDelete(req.swagger.params, res);
   if (!id) {
     return;
   }

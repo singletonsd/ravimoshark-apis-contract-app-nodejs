@@ -16,7 +16,10 @@ module.exports.addMachine = (req: CustomRequest, res: CustomResponse, next: Cust
 };
 
 module.exports.deleteMachine = (req: CustomRequest, res: CustomResponse, next: CustomNext) => {
-  const id = req.swagger.params.id.value;
+  const id = Utilities.checkIdAndDelete(req.swagger.params, res);
+  if (!id) {
+    return;
+  }
   MachinesService.delete(id)
     .then((response: any) => {
       ResponsePayload.response(res, response);
