@@ -48,7 +48,7 @@ DOCKER_BUILD_COMMIT_SHA="none"
 DOCKER_BUILD_IMAGES_FOLDER="docker-images"
 
 if [ -z "${DOCKER_BUILD_BASE_NAME+x}" ]; then
-    DOCKER_BUILD_BASE_NAME="registry.gitlab.com/singletonsd/docker/gitlab-ci-validator"
+    DOCKER_BUILD_BASE_NAME="registry.gitlab.com/ravimosharksas/apis/contract/app-nodejs"
 fi
 
 if [ -z "${DOCKER_BUILD_TAG+x}" ]; then

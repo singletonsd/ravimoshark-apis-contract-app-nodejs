@@ -22,7 +22,7 @@ LABEL mainteiner="Patricio Perpetua <patricio.perpetua.arg@gmail.com>" \
     architecture="x86_64" \
     vendor="SINGLETON" \
     vcs-type="git" \
-    vcs-url="https://gitlab.com/ravimosharksas/apis/contract/app.git" \
+    vcs-url="https://gitlab.com/ravimosharksas/apis/contract/app-nodejs.git" \
     distribution-scope="private" \
     Summary="Image to run Ravimoshark Contracts API."
 
