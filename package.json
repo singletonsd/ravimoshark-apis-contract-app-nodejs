@@ -18,6 +18,7 @@
     "generateEntities": "typeorm-model-generator -h d05qizmaog.database.windows.net -d db_taches_new -u XXXX -x XXXX -p 1433 -e mssql -o src/databases/entities --noConfig --generateConstructor --ssl",
     "generateTest": "oatts generate -s src/api/swagger.yaml -w test",
     "generate-oas": "oas-generator src/api/swagger.yaml -n generated",
+    "generate-oas-local": "oas-generator ../documentation/dist/openapi.yaml -n generated",
     "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts",
     "watch-node": "nodemon dist/server.js",
     "watch-ts": "tsc -w",
@@ -30,20 +31,20 @@
     "singletonSD",
     "contracts"
   ],
-  "homepage": "https://gitlab.com/ravimosharksas/apis/contract/app",
+  "homepage": "https://gitlab.com/ravimosharksas/apis/contract/app-nodejs",
   "license": "SEE LICENSE IN LICENSE file",
   "bugs": {
-    "url": "https://gitlab.com/ravimosharksas/apis/contract/app/issues",
-    "email": "patricio.perpetua.arg@gmail.com"
+    "url": "https://gitlab.com/ravimosharksas/apis/contract/app-nodejs/issues",
+    "email": "patoperpetua@gmail.com"
   },
   "author": {
     "name": "Patricio Perpetua",
-    "email": "patricio.perpetua.arg@gmail.com",
+    "email": "patoperpetua@gmail.com",
     "url": "http://patricioperpetua.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/ravimosharksas/apis/contract/app.git"
+    "url": "https://gitlab.com/ravimosharksas/apis/contract/app-nodejs.git"
   },
   "private": true,
   "dependencies": {

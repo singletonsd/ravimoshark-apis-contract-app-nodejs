@@ -55,7 +55,7 @@ export class PiecesService {
                 reject(VALID_RESPONSES.ERROR.PARAMS.MALFORMED.ORDERBY);
                 return;
             }
-            LoggerUtility.info(`${logHeader} with`, object);
+            LoggerUtility.debug(`${logHeader} with`, object);
             const [accounts, total] = await getConnection().manager.findAndCount(Pieces, object);
             if (!accounts || !accounts.length) {
                 LoggerUtility.warn(SERVICE_NAME, FUNCTION_NAME, "empty result");

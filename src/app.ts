@@ -61,24 +61,28 @@ if (fs.existsSync("./ormconfig.json")) {
     LoggerUtility.info("Found ormconfig.json file in root folder.");
     connectionFunction = createConnection();
 } else {
-    const specDB = fs.readFileSync(
-        path.join(__dirname, "../src/assets/ormconfig.json"),
-        "utf8"
-      );
-    const dbConf = JSON.parse(specDB);
-    dbConf[0].entities = [];
-    if (process.env.NODE_ENV === "production") {
-        LoggerUtility.info("Working with JS files");
-        dbConf[0].entities.push("dist/databases/entities/**/*.js");
+    const specDir = path.join(__dirname, "../src/assets/ormconfig.json");
+    if (fs.existsSync(specDir)) {
+        const specDB = fs.readFileSync(specDir, "utf8");
+        const dbConf = JSON.parse(specDB);
+        dbConf[0].entities = [];
+        if (process.env.NODE_ENV === "production") {
+            LoggerUtility.info("Working with JS files");
+            dbConf[0].entities.push("dist/databases/entities/**/*.js");
+        } else {
+            LoggerUtility.info("Working with TS files");
+            dbConf[0].entities.push("src/databases/entities/**/*.ts");
+        }
+        const password = process.env.DB_PASSWORD;
+        const user = process.env.DB_USER;
+        dbConf[0].username = user;
+        dbConf[0].password = password;
+        connectionFunction = createConnections(dbConf);
     } else {
-        LoggerUtility.info("Working with TS files");
-        dbConf[0].entities.push("src/databases/entities/**/*.ts");
+        connectionFunction = new Promise((resolve, reject) => {
+            resolve(true);
+        });
     }
-    const password = process.env.DB_PASSWORD;
-    const user = process.env.DB_USER;
-    dbConf[0].username = user;
-    dbConf[0].password = password;
-    connectionFunction = createConnections(dbConf);
 }
 
 app.use(bodyParser.json());

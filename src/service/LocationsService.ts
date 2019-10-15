@@ -129,6 +129,7 @@ export class LocationsService {
         const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise<Location>(async (resolve, reject) => {
         LoggerUtility.info(`${logHeader}`);
+        LoggerUtility.debug(`${logHeader} with`, params);
         const previous: Location = await getConnection().manager
             .findOne(Location
             , DatabaseUtilities.getFindOneObject(params.id, params.deleted, Location));
@@ -166,7 +167,7 @@ export class LocationsService {
             reject(VALID_RESPONSES.ERROR.PARAMS.MALFORMED.ORDERBY);
             return;
         }
-        LoggerUtility.info(`${logHeader} with`, object);
+        LoggerUtility.debug(`${logHeader} with`, object);
         const [items, total] = await getConnection().manager.findAndCount(Location, object);
         if (!items || !items.length) {
             LoggerUtility.warn(`${logHeader} empty result`);

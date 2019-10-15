@@ -88,7 +88,7 @@ export class ContractsService {
      * refContract Long id to delete or search
      * no response value expected for this operation
      */
-    public static delete(refContract: RefContract) {
+    public static delete(refContract: ParametersIdDeleted) {
         // TODO: contracts delete.
         const FUNCTION_NAME = "delete";
         const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
@@ -158,7 +158,8 @@ export class ContractsService {
         const FUNCTION_NAME = "getById";
         const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise<Contracts>(async (resolve, reject) => {
-        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
+        LoggerUtility.info(`${logHeader}`);
+        LoggerUtility.debug(`${logHeader} with`, params);
         const previous: Contracts = await getConnection().manager.findOne(Contracts,
             DatabaseUtilities.getFindOneObject(params.id, params.deleted, Contracts));
         if (!previous) {
@@ -188,14 +189,14 @@ export class ContractsService {
         const FUNCTION_NAME = "get";
         const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise<{metadata: Metadata, items: Array<Contracts>}>(async (resolve, reject) => {
-        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
+        LoggerUtility.info(`${logHeader}`);
         const object = DatabaseUtilities.getFindObject(params, Contracts);
         if (!object) {
             LoggerUtility.warn(`${logHeader} order param malformed ${params.orderBy}`);
             reject(VALID_RESPONSES.ERROR.PARAMS.MALFORMED.ORDERBY);
             return;
         }
-        LoggerUtility.info(`${logHeader} with`, object);
+        LoggerUtility.debug(`${logHeader} with`, object);
         const [items, total] = await getConnection().manager.findAndCount(
             Contracts,
             object
