@@ -167,7 +167,8 @@ export class MachinesService {
         const FUNCTION_NAME = "getById";
         const logHeader = `${SERVICE_NAME}: ${FUNCTION_NAME} -`;
         return new Promise(async (resolve, reject) => {
-        LoggerUtility.info(SERVICE_NAME, FUNCTION_NAME);
+        LoggerUtility.info(`${logHeader}`);
+        LoggerUtility.debug(`${logHeader} with`, params);
         const previous: Machine = await getConnection().manager
             .findOne(Machine
             , DatabaseUtilities.getFindOneObject(params.id, params.deleted, Machine));
@@ -205,7 +206,7 @@ export class MachinesService {
             reject(VALID_RESPONSES.ERROR.PARAMS.MALFORMED.ORDERBY);
             return;
         }
-        LoggerUtility.info(`${logHeader} with`, object);
+        LoggerUtility.debug(`${logHeader} with`, object);
         const [items, total] = await getConnection().manager.findAndCount(Machine, object);
         if (!items || !items.length) {
             LoggerUtility.warn(`${logHeader} empty result`);
