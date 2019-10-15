@@ -46,10 +46,9 @@ export class Clients {
     @Column("nvarchar", {
         length: 100,
         name: "Groupe",
-        nullable: true,
-        select: false
+        nullable: true
     })
-    public groupe?: string | null;
+    public group?: string | null;
 
     @Column("nvarchar", {
         length: 100,
