@@ -26,14 +26,14 @@ export class Clients {
         nullable: true,
         select: false
     })
-    public prenom?: string | null;
+    public name?: string | null;
 
     @Column("nvarchar", {
         length: 100,
         name: "Nom",
         nullable: true
     })
-    public name?: string | null;
+    public surname?: string | null;
 
     @Column("nvarchar", {
         length: 100,
@@ -41,7 +41,7 @@ export class Clients {
         nullable: true,
         select: false
     })
-    public etat?: string | null;
+    public state?: string | null;
 
     @Column("nvarchar", {
         length: 100,
@@ -56,7 +56,7 @@ export class Clients {
         nullable: true,
         select: false
     })
-    public statutGroupe?: string | null;
+    public stateGroup?: string | null;
 
     @Column("nvarchar", {
         length: 100,
@@ -64,7 +64,7 @@ export class Clients {
         nullable: true,
         select: false
     })
-    public statut?: string | null;
+    public status?: string | null;
 
     @Column("nvarchar", {
         length: 100,
@@ -72,7 +72,7 @@ export class Clients {
         nullable: true,
         select: false
     })
-    public raisonSociale?: string | null;
+    public companyName?: string | null;
 
     @Column("nvarchar", {
         length: 100,
@@ -94,14 +94,14 @@ export class Clients {
         nullable: true,
         select: false
     })
-    public secteur?: number | null;
+    public sector?: number | null;
 
     @Column("int", {
         name: "Frequence",
         nullable: true,
         select: false
     })
-    public frequence?: number | null;
+    public frequency?: number | null;
 
     @Column("binary", {
         length: 64,
