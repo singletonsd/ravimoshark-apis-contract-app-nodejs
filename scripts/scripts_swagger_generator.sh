@@ -47,9 +47,9 @@ fi
 
 SWAGGER_NAME=swagger-codegen-cli.jar
 SWAGGER_JAR=${FOLDER}/${SWAGGER_NAME}
-SWAGGER_VERSION=3.0.11 # 2.3.1 or 2.4.0
+SWAGGER_VERSION=3.0.12 # 2.3.1 or 2.4.0
 if [ ! -f ${SWAGGER_JAR} ]; then
-    FINAL_URL="http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/${SWAGGER_VERSION}/swagger-codegen-cli-${SWAGGER_VERSION}.jar"
+    FINAL_URL="https://repo1.maven.org/maven2/io/swagger/codegen/v3/swagger-codegen-cli/${SWAGGER_VERSION}/swagger-codegen-cli-${SWAGGER_VERSION}.jar"
     echo "Downloading binary from ${FINAL_URL}"
     curl -L "${FINAL_URL}" -o "${SWAGGER_JAR}"
 fi
