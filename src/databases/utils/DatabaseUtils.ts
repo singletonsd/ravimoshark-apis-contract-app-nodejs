@@ -38,9 +38,9 @@ export class DatabaseUtilities {
     idUser?: number
   ): FindManyOptions {
     let whereObject: { idUser?: number } = {};
-    if (params.filter) {
+    if (params.filterBy) {
       try {
-        whereObject = JSON.parse(params.filter);
+        whereObject = JSON.parse(params.filterBy);
       } catch (e) {
         LoggerUtility.warn("orderBy parameter provided is not in JSON format.", params.orderBy);
       }
