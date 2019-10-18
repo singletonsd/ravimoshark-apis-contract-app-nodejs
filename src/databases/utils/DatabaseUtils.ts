@@ -2,14 +2,7 @@ import { BaseEntity, FindManyOptions, FindOneOptions, ObjectType } from "typeorm
 import { Deleted, Reviewed, Valid } from "../../models";
 import { LoggerUtility } from "../../utils/LoggerUtility";
 import { ParametersComplete } from "../../utils/utilities";
-import {
-  Clients,
-  Contracts,
-  ImportedMachines,
-  Location,
-  Machine,
-  Pieces
-} from "../entities";
+import { Clients, Contracts, ImportedMachines, Location, Machine, Pieces } from "../entities";
 
 export class DatabaseUtilities {
   public static getFindOneObject(
@@ -34,9 +27,7 @@ export class DatabaseUtilities {
     params: ParametersComplete,
     entity: ObjectType<BaseEntity>,
     relations?: Array<string>,
-    selections?: Array<string>,
-    idUser?: number
-  ): FindManyOptions {
+    selections?: Array<string>): FindManyOptions {
     let whereObject: { idUser?: number } = {};
     if (params.filterBy) {
       try {
@@ -45,9 +36,7 @@ export class DatabaseUtilities {
         LoggerUtility.warn("orderBy parameter provided is not in JSON format.", params.orderBy);
       }
     }
-    if (idUser) {
-      whereObject.idUser = idUser;
-    }
+    whereObject = this.addRefClientParam(params.refClient, entity, whereObject);
     const object: FindManyOptions<typeof entity> = {
       skip: params.skip,
       take: params.limit,
@@ -59,9 +48,7 @@ export class DatabaseUtilities {
     if (params.valid) {
       this.addValidParam(params.valid, object.where);
     }
-    if (params.refClient) {
-      this.addParam("client", params.refClient.toLocaleUpperCase(), object.where);
-    }
+    this.addRefContractParam(params.refContract, entity, object.where);
     if (params.orderBy) {
       let order: object;
       try {
@@ -78,6 +65,41 @@ export class DatabaseUtilities {
     object.relations = this.addRelations(entity, relations);
     // object.select = this.addSelections(entity, selections);
     return object;
+  }
+
+  public static addRefClientParam(refClient: string, entity: ObjectType<BaseEntity>, params: any): object {
+    if (!params) {
+      params = {};
+    }
+    if (!refClient) {
+      return params;
+    }
+    if (entity === Clients) {
+      params.refClient = refClient;
+    } else if (entity === Contracts) {
+      params.client = refClient;
+    } else if (entity === Machine) {
+      params.contract = { refClient };
+    }
+    return params;
+  }
+
+  public static addRefContractParam(refContract: string, entity: ObjectType<BaseEntity>, params: any): object {
+    if (!params) {
+      params = {};
+    }
+    if (!refContract) {
+      return params;
+    }
+    if (entity === Contracts) {
+      params.refContract = refContract;
+    } else if (entity === Location) {
+      params.contract = { refContract };
+    } else if (entity === Machine) {
+      // TODO: put this condition.
+      // params.contract = { refContract };
+    }
+    return params;
   }
 
   public static addDeletedParam(deleted: Deleted, params: any): object {
@@ -145,6 +167,7 @@ export class DatabaseUtilities {
         "client",
         "locations",
         "locations.machine",
+        "locations.machine.piece",
         "importedMachines",
         "importedMachines.machine"
       ];

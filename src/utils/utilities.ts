@@ -79,6 +79,7 @@ export class Utilities {
             metadata: this.checkVariableNotNull(parameters, undefined, "metadata"),
             orderBy: this.checkVariableNotNull(parameters, undefined, "orderBy"),
             refClient: this.checkVariableNotNull(parameters, undefined, "refClient"),
+            refContract: this.checkVariableNotNull(parameters, undefined, "refContract"),
             reviewed: this.checkVariableNotNull(parameters, undefined, "reviewed"),
             skip: this.checkVariableNotNull(parameters, undefined, "skip"),
             valid: this.checkVariableNotNull(parameters, undefined, "valid")
@@ -156,4 +157,5 @@ export interface ParametersComplete extends ParametersIdDeleted {
     valid?: Valid | null;
     reviewed?: Reviewed | null;
     refClient?: string | null;
+    refContract?: string | null;
 }
