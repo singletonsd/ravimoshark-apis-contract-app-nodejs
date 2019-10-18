@@ -21,10 +21,12 @@ externalDocs:
 tags:
   - name: Contracts
     description: Operations about contracts.
-  - name: Machines
-    description: Operations about machines.
   - name: ImportedMachines
     description: Operations about imported machines.
+  - name: Locations
+    description: Operations about locations.
+  - name: Machines
+    description: Operations about machines.
 servers:
   - url: 'http://localhost:8000'
   - url: 'https://ravimoshark.com/back/apis/contract/v1'
@@ -240,6 +242,8 @@ paths:
         - $ref: '#/components/parameters/Deleted'
         - $ref: '#/components/parameters/Metadata'
         - $ref: '#/components/parameters/Reviewed'
+        - $ref: '#/components/parameters/RefClientQuery'
+        - $ref: '#/components/parameters/RefContractQuery'
       responses:
         '200':
           description: Request OK.
@@ -375,6 +379,157 @@ paths:
         '405':
           $ref: '#/components/responses/405'
       x-swagger-router-controller: ImportedMachines
+  /locations:
+    get:
+      tags:
+        - Locations
+      summary: Get all locations.
+      description: Get all locations.
+      operationId: getLocations
+      parameters:
+        - $ref: '#/components/parameters/Skip'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/OrderBy'
+        - $ref: '#/components/parameters/Filter'
+        - $ref: '#/components/parameters/Deleted'
+        - $ref: '#/components/parameters/Metadata'
+        - $ref: '#/components/parameters/RefClientQuery'
+        - $ref: '#/components/parameters/RefContractQuery'
+      responses:
+        '200':
+          description: Request OK.
+          headers:
+            - $ref: '#/components/headers/Limit'
+            - $ref: '#/components/headers/Remaining'
+            - $ref: '#/components/headers/Reset'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    $ref: '#/components/schemas/Metadata'
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Locations'
+        '204':
+          $ref: '#/components/responses/204'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+      x-swagger-router-controller: Locations
+    post:
+      tags:
+        - Locations
+      summary: Add one location.
+      description: Add one location.
+      operationId: addLocation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Locations'
+      responses:
+        '200':
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Locations'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+      x-swagger-router-controller: Locations
+    put:
+      tags:
+        - Locations
+      summary: Edit one location.
+      description: Edit one location.
+      operationId: editLocation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Locations'
+      responses:
+        '200':
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Locations'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+      x-swagger-router-controller: Locations
+  '/locations/{id} copy':
+    get:
+      tags:
+        - Locations
+      summary: Get one Location.
+      description: Get one location.
+      operationId: getLocationById
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/Deleted'
+      responses:
+        '200':
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Locations'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+      x-swagger-router-controller: Locations
+    delete:
+      tags:
+        - Locations
+      summary: Delete one location.
+      description: Delete one location.
+      operationId: deleteLocation
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Request OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdInteger'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+      x-swagger-router-controller: Locations
   /machines:
     get:
       tags:
@@ -389,6 +544,8 @@ paths:
         - $ref: '#/components/parameters/Filter'
         - $ref: '#/components/parameters/Deleted'
         - $ref: '#/components/parameters/Metadata'
+        - $ref: '#/components/parameters/RefClientQuery'
+        - $ref: '#/components/parameters/RefContractQuery'
       responses:
         '200':
           description: Request OK.
@@ -425,6 +582,7 @@ paths:
       description: Add one machine.
       operationId: addMachine
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -452,6 +610,7 @@ paths:
       description: Edit one machine.
       operationId: editMachine
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -577,6 +736,8 @@ components:
           type: string
         nickname:
           type: string
+        group:
+          type: string
     Contracts:
       description: Client's contract.
       type: object
@@ -589,6 +750,15 @@ components:
           items:
             $ref: '#/components/schemas/Locations'
         idLocations:
+          type: array
+          items:
+            type: integer
+            format: int64
+        importedMachines:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImportedMachines'
+        idImportedMachines:
           type: array
           items:
             type: integer
@@ -669,8 +839,9 @@ components:
           format: int64
         reviewed:
           type: boolean
-        contract:
-          $ref: '#/components/schemas/Contracts'
+        # TODO: check if swagger UI can avoid circle dependencies.
+        # contract:
+        #   $ref: '#/components/schemas/Contracts'
         refContract:
           type: string
         createdAt:
@@ -688,14 +859,18 @@ components:
         id:
           type: integer
           format: int64
-        machine:
-          $ref: '#/components/schemas/Machines'
+        # TODO: check if swagger UI can avoid circle dependencies.
+        # machine:
+        #   $ref: '#/components/schemas/Machines'
         machineId:
           type: integer
           format: int64
         refContract:
           type: integer
           format: int64
+        # TODO: check if swagger UI can avoid circle dependencies.
+        # contract:
+        #   $ref: '#/components/schemas/Contracts'
     Machines:
       description: Client's machines associated with a contract.
       type: object
@@ -709,6 +884,10 @@ components:
           $ref: '#/components/schemas/Pieces'
         serialNumber:
           type: string
+        locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Locations'
         idLocations:
           type: array
           items:
@@ -870,7 +1049,7 @@ components:
         type: string
     RefClientQuery:
       name: refClient
-      description: Data from a desired contract
+      description: Data from a desired client
       in: query
       required: false
       schema:
@@ -880,6 +1059,14 @@ components:
       description: id to delete or search
       in: path
       required: true
+      schema:
+        type: integer
+        format: int64
+    RefContractQuery:
+      name: refContract
+      description: Data from a desired contract
+      in: query
+      required: false
       schema:
         type: integer
         format: int64
