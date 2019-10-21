@@ -23,7 +23,7 @@ export class ClientsService {
             where: { refClient }
         });
         if (!previous) {
-            LoggerUtility.warn(`${logHeader} ${VALID_RESPONSES.ERROR.NOT_EXIST.CONTRACT} ${refClient}`);
+            LoggerUtility.warn(`${logHeader} ${VALID_RESPONSES.ERROR.NOT_EXIST.CLIENT} ${refClient}`);
             resolve(false);
             return;
         }

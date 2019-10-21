@@ -25,6 +25,7 @@ export const VALID_RESPONSES = {
         },
         NOT_DELETED: "error.not_deleted",
         NOT_EXIST: {
+            CLIENT: "error.not_exist.client",
             CONTRACT: "error.not_exist.contract",
             IMPORTED_MACHINE: "error.not_exist.importedMachine",
             MACHINE: "error.not_exist.machine",
