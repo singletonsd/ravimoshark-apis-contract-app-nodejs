@@ -7,3 +7,4 @@ app_tokens.json
 /build/
 /dist/
 generated
+scripts
