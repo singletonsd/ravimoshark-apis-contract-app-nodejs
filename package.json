@@ -56,7 +56,7 @@
     "@types/lodash": "^4.14.139",
     "@types/node": "^12.7.8",
     "@types/swagger-tools": "0.10.6",
-    "bcrypt": "3.0.6",
+    "bcrypt": "5.0.0",
     "body-parser": "^1.19.0",
     "cors": "2.8.5",
     "dotenv": "^8.1.0",
