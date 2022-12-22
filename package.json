@@ -64,7 +64,7 @@
     "express-jwt": "5.3.1",
     "helmet": "^3.21.1",
     "js-yaml": "3.13.1",
-    "jsonwebtoken": "8.5.1",
+    "jsonwebtoken": "9.0.0",
     "mssql": "5.1.0",
     "normalize-port": "1.0.0",
     "oas-tools": "2.1.7",
