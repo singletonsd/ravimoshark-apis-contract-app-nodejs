@@ -81,7 +81,7 @@
     "@types/swagger-ui-express": "^3.0.1",
     "chai-http": "4.3.0",
     "chakram": "1.5.0",
-    "mocha": "^6.2.0",
+    "mocha": "^10.2.0",
     "nodemon": "^1.19.2",
     "npm-check": "^5.9.0",
     "oas-generator": "^2.1.5",
